@@ -50,16 +50,18 @@ def query_http_server(op, **kwargs):
             md.update((kwargs['title']+kwargs['answer']+string_enc).encode())
             try:
                 tmp = demjson.decode(requests.post(questions_request_update, data={'title': kwargs['title'], 'answer': kwargs['answer'], 'enc': md.hexdigest()}).text, encoding='utf-8')
-            except demjson.JSONDecodeError:
+            except:
                 return False
             if tmp['code'] == 100:
                 return True
         elif op == 'query':
             md = md5()
             md.update((kwargs['title'] + string_enc).encode())
+            sure = False
             try:
                 i = demjson.decode(requests.get(questions_request_query, params={'title': kwargs['title'], 'enc': md.hexdigest()}).text, encoding='utf-8')
                 if i['code'] == 100:
+                    sure = True
                     if kwargs['test_type'] == '判断题':
                         if isinstance(i['data'], list):
                             i['data'] = i['data'][0]
@@ -69,18 +71,18 @@ def query_http_server(op, **kwargs):
                             return False
                     else:
                         return re.split(r, i['data'])
-                else:
-                    tmp = wechat_search(kwargs['title'])
-                    if tmp:
-                        if kwargs['test_type'] == '判断题':
-                            if isinstance(tmp, list):
-                                tmp = tmp[0]
-                            if tmp in ['√', '正确', 'true']:
-                                return True
-                        else:
-                            return tmp
-                    return False
             except:
+                pass
+            if not sure:
+                tmp = wechat_search(kwargs['title'])
+                if tmp:
+                    if kwargs['test_type'] == '判断题':
+                        if isinstance(tmp, list):
+                            tmp = tmp[0]
+                        if tmp in ['√', '正确', 'true']:
+                            return True
+                    else:
+                        return tmp
                 return False
         elif op == 'addtitle':
             md = md5()
