@@ -45,13 +45,18 @@ class Console:
         self.driver.quit()
 
     def login(self, student_num, password, code):
-        self.driver.find_element(login_code['type'], login_code['string']).clear()
+        try:
+            self.driver.find_element(login_code['type'], login_code['string']).clear()
+        except common.exceptions.NoSuchElementException:
+            self.driver.switch_to.frame(self.driver.find_elements_by_name('iframe')[0])
+            self.driver.find_element(login_code['type'], login_code['string']).clear()
         self.driver.find_element(login_code['type'], login_code['string']).send_keys(code)
         self.driver.find_element(login_username['type'], login_username['string']).clear()
         self.driver.find_element(login_username['type'], login_username['string']).send_keys(student_num)
         self.driver.find_element(login_password['type'], login_password['string']).clear()
         self.driver.find_element(login_password['type'], login_password['string']).send_keys(password)
         self.driver.find_element(login_button['type'], login_button['string']).click()
+        self.driver.switch_to.default_content()
         try:
             name = self.driver.find_element(login_ver['type'], login_ver['string']).text
         except common.exceptions.NoSuchElementException:
