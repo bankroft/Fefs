@@ -77,6 +77,8 @@ class Console:
         # 是否已经点击过院校选择按钮进入院校选择界面
         if not self.status['search_school']:
             self.driver.find_element(select_school_button['type'], select_school_button['string']).click()  # 点击选择院校按钮
+        else:
+            self.driver.find_element('css', '#dialog2 > div > div.zw_result > p > a').click()
         self.driver.find_element(select_school_search['type'], select_school_search['string']).clear()  # 清除搜索框
         self.driver.find_element(select_school_search['type'], select_school_search['string']).send_keys(school)  # 向搜索框填入院校
         self.driver.find_element(select_school_search_button['type'], select_school_search_button['string']).click()  # 院校搜索
