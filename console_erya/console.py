@@ -94,31 +94,34 @@ class Console:
         self.status['select_school'] = 1
         return True
 
-    # def get_login_ver_code(self, refresh=False):
-    #     """
-    #     获取验证码图片，保存为code.png
-    #     :param refresh: 是否刷新
-    #     :return:
-    #     """
-    #     filename = 'vercode.png'
-    #     if refresh:
-    #         self.operate(refresh_code['type'], refresh_code['string'], 'click')
-    #     self.driver.get_screenshot_as_file('code.png')  # 保存登陆界面截图
-    #     a = self.driver.find_element_by_id('numVerCode')  # 定位验证码
-    #     l = a.location['x'] + 1
-    #     t = a.location['y'] + 1
-    #     r = a.location['x'] + a.size['width']
-    #     b = a.location['y'] + a.size['height']
-    #     im = Image.open('code.png')
-    #     im = im.crop((l, t, r, b))
-    #     im.save(os.path.join(path_vercode, filename))
-    #     result = self.__base64_png+b64encode(open(os.path.join(path_vercode, filename), 'rb').read()).decode()
-    #     try:
-    #         os.remove('code.png')
-    #         os.remove(os.path.join(path_vercode, filename))
-    #     except OSError:
-    #         pass
-    #     return result
+    def get_login_ver_code(self, refresh=False):
+        """
+        获取验证码图片，保存为code.png
+        :param refresh: 是否刷新
+        :return:
+        """
+        filename = 'vercode.png'
+        if refresh:
+            self.driver.find_element(refresh_code['type'], refresh_code['string']).click()
+            # self.operate(refresh_code['type'], refresh_code['string'], 'click')
+        self.driver.get_screenshot_as_file('code.png')  # 保存登陆界面截图
+        a = self.driver.find_element_by_id('numVerCode')  # 定位验证码
+        l = a.location['x'] + 1
+        t = a.location['y'] + 1
+        r = a.location['x'] + a.size['width']
+        b = a.location['y'] + a.size['height']
+        im = Image.open('code.png')
+        im = im.crop((l, t, r, b))
+        path_ = os.path.join(auth_code_path, filename)
+        im.save(path_)
+        return path_
+        # result = self.__base64_png+b64encode(open(os.path.join(path_vercode, filename), 'rb').read()).decode()
+        # try:
+        #     os.remove('code.png')
+        #     os.remove(os.path.join(path_vercode, filename))
+        # except OSError:
+        #     pass
+        # return result
 
     def get_course(self):
         self.__course = []

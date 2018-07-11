@@ -5,6 +5,7 @@ from flask_restful import reqparse, Api, Resource
 from console_erya.global_var import globalvar
 from console_erya import console
 from flask_cors import *
+from rk_code import rk_code
 import shutil
 import os
 import time
@@ -65,8 +66,16 @@ class Main(Resource):
                 else:
                     return [{'status': 404, 'message': '先搜索学校'}]
         elif args['op'] == 'login':
-            if args['student_num'] and args['pwd'] and args['ver_code']:
-                tmp = con.login(args['student_num'], args['pwd'], args['ver_code'])
+            # print(con.get_login_ver_code())
+            # ver_code = args['ver_code']
+            # ver_code = rk_code(con.get_login_ver_code())
+            ver_code = rk_code(con.get_login_ver_code(refresh=True))
+            if args['student_num'] and args['pwd'] and ver_code:
+                tmp = con.login(args['student_num'], args['pwd'], ver_code)
+                while tmp[0] == '验证码错误':
+                    time.sleep(1)
+                    ver_code = rk_code(con.get_login_ver_code(refresh=True))
+                    tmp = con.login(args['student_num'], args['pwd'], ver_code)
                 if tmp[1]:
                     return [{'status': 100, 'message': '', 'data': tmp[0]}]
                 else:

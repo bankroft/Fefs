@@ -15,6 +15,9 @@ port = conf.getint('Server', 'port')
 # chrome 驱动
 chrome_drive_path = str(Path(getcwd()) / 'chromedriver.exe') if not conf.get('chromedriver', 'path', fallback=False) else conf.get('chromedriver', 'path', fallback=False)
 
+# 验证码保存位置
+auth_code_path = str(Path(getcwd()) / 'temp')
+
 # http请求地址(查询)
 questions_request_query = conf.get('queryHTTP', 'url_query', fallback=False)
 
