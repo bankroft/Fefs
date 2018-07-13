@@ -17,7 +17,7 @@ CORS(app, supports_credentials=True)
 api = Api(app)
 
 __author__ = 'bankroft'
-__version__ = '0.58 debug'
+__version__ = '0.60 debug'
 __blog__ = 'https://www.bankroft.cn'
 __web__ = 'https://www.bankroft.cn/erya-console'
 

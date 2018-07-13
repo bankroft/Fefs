@@ -1,4 +1,5 @@
 ## 使用方法：
+0. 根目录新建raccount.txt文件，内容为若快平台账号和密码，格式为username|password
 1. 配置config.ini,文件内有各项说明
 2. 命令行运行rest_console.exe文件
 3. 发送HTTP请求（ip,port在config.ini Server部分）：
@@ -15,7 +16,7 @@
 
 -------------------
 
-具体使用方法[我的博客](http://www.bankroft.cn/%E8%B6%85%E6%98%9F%EF%BC%88%E5%B0%94%E9%9B%85%EF%BC%9F%EF%BC%89%E5%88%B7%E8%AF%BE-beta/, "my blog")
+具体使用方法[我的博客](https://www.bankroft.cn/?p=37, "my blog")
 
 ------------------
 
@@ -41,5 +42,5 @@ debug=False
 
 [wechat]
 ;微信公众号查题，支持多个，以空格分割，使用前请前关注该公众号且回复内容为sharing
-;wechat
+;wechat = 
 ```
