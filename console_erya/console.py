@@ -37,7 +37,10 @@ class Console:
         options.add_experimental_option("prefs", prefs)
         self.driver = webdriver.Chrome(chrome_drive_path, chrome_options=options)
         self.driver.implicitly_wait(timeout)
-        self.driver.set_window_size(1920, 1080)
+        try:
+            self.driver.set_window_size(1920, 1080)
+        except common.exceptions.WebDriverException:
+            logger.error(log_template, '出错', '无法调整窗口大小', '忽略此步骤')
         self.driver.get(entrance_url)
         # self.get_login_ver_code()
 
