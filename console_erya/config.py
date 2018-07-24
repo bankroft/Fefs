@@ -127,10 +127,17 @@ location_video_test_submit1_3 = (490, 300, 540, 330)
 entrance_url = 'https://passport2.chaoxing.com/login?fid=145&refer=http://i.mooc.chaoxing.com'
 
 
+# # 刷新验证码
+# refresh_code = {
+#     'type': 'xpath',
+#     'string': '//*[@id="numVerCode"]'
+# }
+
+
 # 刷新验证码
 refresh_code = {
     'type': 'xpath',
-    'string': '//*[@id="numVerCode"]'
+    'string': '//*[@id="numVerCode_tr"]//a'
 }
 
 # 验证码图片存放位置
