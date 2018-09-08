@@ -62,6 +62,9 @@ noanswer_sleep = conf.getint('User', 'noanswer_sleep', fallback=5) if conf.getin
 # 开启debug模式(自动截图)
 debug = conf.getboolean('program', 'debug', fallback=False)
 
+# 线路(本校/公网等)
+internet_line = conf.get('User', 'internet_line', fallback='公网1')
+
 # 题库查询方式 query_mongo_database
 # questions_query_method = query_mongodb if conf.getint('queryMethod', 'm', fallback=False) == 1 else query_http_server
 # questions_query_method = query_http_server

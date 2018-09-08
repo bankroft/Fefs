@@ -64,33 +64,33 @@ class AutomaticCompletion(threading.Thread):
             # driver.switch_to.frame(driver.find_elements_by_tag_name(x['name'])[x['index']])
             self.driver.switch_to.frame(self.driver.find_elements_by_tag_name(x['name'])[x['index']])
 
-    def internet_line(self):
-        last_internet_line = 1
-        while True:
-            self.switch_to_video_frame()
-            try:
-                self.driver.find_element_by_xpath('//*[@aria-label="弹窗"]/div[2]/ul/li[' + str(last_internet_line) + ']/label').click()
-            except common.exceptions.NoSuchElementException:
-                print(12)
-                return False
-            last_internet_line += 1
-            time.sleep(2)
-            if self.play_status()[0]:
-                return True
-            self.driver.switch_to.default_content()
-            self.driver.find_element(learn_page_video_button['type'], learn_page_video_button['string']).click()
+    # def internet_line(self):
+    #     last_internet_line = 1
+    #     while True:
+    #         self.switch_to_video_frame()
+    #         try:
+    #             self.driver.find_element_by_xpath('//*[@aria-label="弹窗"]/div[2]/ul/li[' + str(last_internet_line) + ']/label').click()
+    #         except common.exceptions.NoSuchElementException:
+    #             print(12)
+    #             return False
+    #         last_internet_line += 1
+    #         time.sleep(2)
+    #         if self.play_status()[0]:
+    #             return True
+    #         self.driver.switch_to.default_content()
+    #         self.driver.find_element(learn_page_video_button['type'], learn_page_video_button['string']).click()
 
     def play_status(self):
         # self.switch_to_video_frame()
         self.__screenshot_video(os.path.join(folder_temp_path, str(0) + '.png'))
         time.sleep(5)
         self.__screenshot_video(os.path.join(folder_temp_path, str(1) + '.png'))
-        # if open(os.path.join(folder_temp_path, str(0) + '.png'), 'rb').read() != open(os.path.join(folder_temp_path, str(1) + '.png'), 'rb').read():
+        if open(os.path.join(folder_temp_path, str(0) + '.png'), 'rb').read() != open(os.path.join(folder_temp_path, str(1) + '.png'), 'rb').read():
+            pass
+        # if imagehash.average_hash(Image.open(os.path.join(folder_temp_path, str(0) + '.png'))) - imagehash.average_hash(Image.open(os.path.join(folder_temp_path, str(1) + '.png'))) != 0:
         #     pass
-        if imagehash.average_hash(Image.open(os.path.join(folder_temp_path, str(0) + '.png'))) - imagehash.average_hash(Image.open(os.path.join(folder_temp_path, str(1) + '.png'))) != 0:
-            pass
-        elif Image.open(os.path.join(folder_temp_path, str(0) + '.png')).crop(video_progress_bar1).tobytes() != Image.open(os.path.join(folder_temp_path, str(1) + '.png')).crop(video_progress_bar1).tobytes():
-            pass
+        # elif Image.open(os.path.join(folder_temp_path, str(0) + '.png')).crop(video_progress_bar1).tobytes() != Image.open(os.path.join(folder_temp_path, str(1) + '.png')).crop(video_progress_bar1).tobytes():
+        #     pass
         else:
             return False, 'not play'
         return True, 'playing'
@@ -101,12 +101,13 @@ class AutomaticCompletion(threading.Thread):
         :param qt:题目类型
         :return:
         """
-        # 正确
         if qt == '判断题':
             # 正确
-            self.driver.find_element_by_xpath('//*[@id="videoquiz-1038"]/ul/li[1]/label').click()
+            self.driver.find_element_by_xpath('//div[@class="ans-videoquiz-title"]/../ul/li[1]/label').click()
+            # self.driver.find_element_by_xpath('//*[@id="videoquiz-1038"]/ul/li[1]/label').click()
             # 提交按钮
-            self.driver.find_element_by_xpath('//*[@id="ext-gen1049"]').click()
+            self.driver.find_element_by_xpath('//div[@class="ans-videoquiz-title"]/../div[2]').click()
+            # self.driver.find_element_by_xpath('//*[@id="ext-gen1049"]').click()
             try:
                 alert = self.driver.switch_to.alert
                 # 回答错误
@@ -115,9 +116,11 @@ class AutomaticCompletion(threading.Thread):
                 else:
                     alert.accept()
                 # 错误
-                self.driver.find_element_by_xpath('//*[@id="videoquiz-1038"]/ul/li[2]/label').click()
+                self.driver.find_element_by_xpath('//div[@class="ans-videoquiz-title"]/../ul/li[2]/label').click()
+                # self.driver.find_element_by_xpath('//*[@id="videoquiz-1038"]/ul/li[2]/label').click()
                 # 提交按钮
-                self.driver.find_element_by_xpath('//*[@id="ext-gen1049"]').click()
+                self.driver.find_element_by_xpath('//div[@class="ans-videoquiz-title"]/../div[2]').click()
+                # self.driver.find_element_by_xpath('//*[@id="ext-gen1049"]').click()
             except common.exceptions.NoAlertPresentException:
                 pass
 
@@ -156,33 +159,51 @@ class AutomaticCompletion(threading.Thread):
                 break
             self.switch_to_video_frame()
             if self.play_status()[0]:
+                print(1)
                 last_opt = None
             else:
                 try:
+                    print(12)
                     # 视频因格式不支持或者服务器或网络的问题无法加载。
                     text = self.driver.find_element_by_xpath('//*[@aria-label="弹窗"]/div[2]/div').text.strip()
+                    # 是否正确切换线路
+                    tmp = False
                     if '视频因格式不支持或者服务器或网络的问题无法加载' in text:
-                        print(6)
-                        if not self.internet_line():
-                            return False
+                        for x in self.driver.find_elements_by_xpath('//*[@aria-label="弹窗"]/div[2]/ul/li/label'):
+                            if x.text.strip() == internet_line:
+                                logger.info(log_template, '切换线路', internet_line, '成功')
+                                x.click()
+                                tmp = True
+                                time.sleep(3)
+                        # if not self.internet_line():
+                        #     return False
                         last_opt = 'ct'
+                        if not tmp:
+                            logger.error(log_template, '切换线路', internet_line, '失败')
+                            return False
+                        else:
+                            continue
                     elif '由于视频文件损坏或是该视频使用了你的浏览器不支持的功能，播放终止' in text:
-                        pass
-                    continue
+                        logger.error(log_template, '错误', '未知错误', '重新开始？')
+                        return False
                 except common.exceptions.NoSuchElementException:
                     pass
                 except IndexError:
                     pass
+                print(123)
                 try:
-                    text = self.driver.find_element_by_xpath('//*[@id="videoquiz-1038"]/div').strip()
+                    text = self.driver.find_element_by_xpath('//div[@class="ans-videoquiz-title"]').text.strip()
+                    print(33)
                     last_opt = 'a'
                     if text[1:4] == '判断题':
                         self.answer_video(text[1:4])
                     continue
                 except common.exceptions.NoSuchElementException:
                     pass
+                print(2)
                 if last_opt == 's':
                     return False
+                logger.info(log_template, '点击视频', '启动', '成功')
                 self.click_video()
                 last_opt = 's'
         return True
