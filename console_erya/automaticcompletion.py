@@ -58,7 +58,136 @@ class AutomaticCompletion(threading.Thread):
         #     logger.info(log_template, 'Update database', x['name'], 'Complete')
         #     self.driver.close()
 
+    def switch_to_video_frame(self):
+        self.driver.switch_to.default_content()
+        for x in learn_page_video_iframe:
+            # driver.switch_to.frame(driver.find_elements_by_tag_name(x['name'])[x['index']])
+            self.driver.switch_to.frame(self.driver.find_elements_by_tag_name(x['name'])[x['index']])
+
+    def internet_line(self):
+        last_internet_line = 1
+        while True:
+            self.switch_to_video_frame()
+            try:
+                self.driver.find_element_by_xpath('//*[@aria-label="弹窗"]/div[2]/ul/li[' + str(last_internet_line) + ']/label').click()
+            except common.exceptions.NoSuchElementException:
+                print(12)
+                return False
+            last_internet_line += 1
+            time.sleep(2)
+            if self.play_status()[0]:
+                return True
+            self.driver.switch_to.default_content()
+            self.driver.find_element(learn_page_video_button['type'], learn_page_video_button['string']).click()
+
+    def play_status(self):
+        # self.switch_to_video_frame()
+        self.__screenshot_video(os.path.join(folder_temp_path, str(0) + '.png'))
+        time.sleep(5)
+        self.__screenshot_video(os.path.join(folder_temp_path, str(1) + '.png'))
+        # if open(os.path.join(folder_temp_path, str(0) + '.png'), 'rb').read() != open(os.path.join(folder_temp_path, str(1) + '.png'), 'rb').read():
+        #     pass
+        if imagehash.average_hash(Image.open(os.path.join(folder_temp_path, str(0) + '.png'))) - imagehash.average_hash(Image.open(os.path.join(folder_temp_path, str(1) + '.png'))) != 0:
+            pass
+        elif Image.open(os.path.join(folder_temp_path, str(0) + '.png')).crop(video_progress_bar1).tobytes() != Image.open(os.path.join(folder_temp_path, str(1) + '.png')).crop(video_progress_bar1).tobytes():
+            pass
+        else:
+            return False, 'not play'
+        return True, 'playing'
+
+    def answer_video(self, qt):
+        """
+
+        :param qt:题目类型
+        :return:
+        """
+        # 正确
+        if qt == '判断题':
+            # 正确
+            self.driver.find_element_by_xpath('//*[@id="videoquiz-1038"]/ul/li[1]/label').click()
+            # 提交按钮
+            self.driver.find_element_by_xpath('//*[@id="ext-gen1049"]').click()
+            try:
+                alert = self.driver.switch_to.alert
+                # 回答错误
+                if alert.text.strip() == '回答有错误':
+                    alert.accept()
+                else:
+                    alert.accept()
+                # 错误
+                self.driver.find_element_by_xpath('//*[@id="videoquiz-1038"]/ul/li[2]/label').click()
+                # 提交按钮
+                self.driver.find_element_by_xpath('//*[@id="ext-gen1049"]').click()
+            except common.exceptions.NoAlertPresentException:
+                pass
+
+    def click_video(self):
+        self.driver.switch_to.default_content()
+        self.switch_to_video_frame()
+        self.driver.find_element_by_id('video').click()
+
+    def video_complete_status(self):
+        try:
+            self.driver.switch_to.default_content()
+            for x in learn_page_video_part_iframe:
+                # driver.switch_to.frame(driver.find_elements_by_tag_name(x['name'])[x['index']])
+                self.driver.switch_to.frame(self.driver.find_elements_by_tag_name(x['name'])[x['index']])
+            self.driver.find_element(video_complete_status['type'], video_complete_status['string'])
+            return True
+        except common.exceptions.NoSuchElementException:
+            return False
+
     def __watch(self):
+        self.driver.switch_to.default_content()
+        # 视频学习部分
+        try:
+            self.driver.find_element(learn_page_video_button['type'], learn_page_video_button['string']).click()
+            time.sleep(2)
+        except common.exceptions.NoSuchElementException:
+            return True
+        # ct: 改变线路，a: 回答,s: 点击开始
+        last_opt = None
+        self.switch_to_video_frame()
+        self.driver.find_element_by_xpath('//*[@id="video"]/button').click()
+        time.sleep(1)
+        while True:
+            # 该视频是否完成
+            if self.video_complete_status():
+                break
+            self.switch_to_video_frame()
+            if self.play_status()[0]:
+                last_opt = None
+            else:
+                try:
+                    # 视频因格式不支持或者服务器或网络的问题无法加载。
+                    text = self.driver.find_element_by_xpath('//*[@aria-label="弹窗"]/div[2]/div').text.strip()
+                    if '视频因格式不支持或者服务器或网络的问题无法加载' in text:
+                        print(6)
+                        if not self.internet_line():
+                            return False
+                        last_opt = 'ct'
+                    elif '由于视频文件损坏或是该视频使用了你的浏览器不支持的功能，播放终止' in text:
+                        pass
+                    continue
+                except common.exceptions.NoSuchElementException:
+                    pass
+                except IndexError:
+                    pass
+                try:
+                    text = self.driver.find_element_by_xpath('//*[@id="videoquiz-1038"]/div').strip()
+                    last_opt = 'a'
+                    if text[1:4] == '判断题':
+                        self.answer_video(text[1:4])
+                    continue
+                except common.exceptions.NoSuchElementException:
+                    pass
+                if last_opt == 's':
+                    return False
+                self.click_video()
+                last_opt = 's'
+        return True
+
+    def __watch_bak(self):
         # self.driver.switch_to.window(self.driver.window_handles[0])
         # self.driver.execute_script(self.__js.format(lesson))
         # for x in self.driver.window_handles:
@@ -427,7 +556,8 @@ class AutomaticCompletion(threading.Thread):
         for x in learn_page_video_iframe:
             # driver.switch_to.frame(driver.find_elements_by_tag_name(x['name'])[x['index']])
             self.driver.switch_to.frame(self.driver.find_elements_by_tag_name(x['name'])[x['index']])
-        tmp = self.driver.find_element_by_tag_name('object')
+        # tmp = self.driver.find_element_by_tag_name('object')
+        tmp = self.driver.find_element_by_id('video_html5_api')
         i = Image.open('tmp.png')
         i.crop(
             (

@@ -5,7 +5,7 @@ from flask_restful import reqparse, Api, Resource
 from console_erya.global_var import globalvar
 from console_erya import console
 from flask_cors import *
-from rk_code import rk_code
+from utils.util import rk_code
 import shutil
 import os
 import time

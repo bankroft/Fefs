@@ -303,7 +303,7 @@ learn_page_test_iframe = [
     }
 ]
 
-# 学习页面视频按钮
+# 学习页面[视频]按钮
 learn_page_video_button = {
     'type': 'xpath',
     'string': '//span[starts-with(@title, "视频")]'
