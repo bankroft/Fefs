@@ -13,8 +13,7 @@ __pycache__/
 .idea
 dist
 build
-/temp/*
-
+# /temp/*.png
 
 setup.py
 rpc_console.py
