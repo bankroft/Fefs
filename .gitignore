@@ -5,20 +5,17 @@ __pycache__/
 *.log
 *.ico
 *.pkl
-*.ini
+*.bak
+*.png
+*.txt
 
 # Distribution / packaging
 .idea
 dist
 build
-/temp
+/temp/*
 
 
-/*.exe
-/*.png
-/setup.py
-/rpc_console.py
-/console_erya/temp
-/console_erya/templates_pic
-temp
-raccount.txt
+setup.py
+rpc_console.py
+console_erya/*.exe
