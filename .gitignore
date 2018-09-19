@@ -7,7 +7,6 @@ __pycache__/
 *.pkl
 *.bak
 *.png
-*.txt
 
 # Distribution / packaging
 .idea
