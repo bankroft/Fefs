@@ -1,7 +1,7 @@
 ## 使用方法：
 0. 修改raccount.txt文件，内容为若快平台账号和密码，格式为username|password
 1. 配置config.ini,文件内有各项说明
-2. 命令行运行rest_console.exe文件
+2. 命令行运行rest_console.exe文件(失效，请用源码运行)
 3. 打开release下载的erya console文件，运行index.html：
 
 -------------------
@@ -42,3 +42,11 @@ noanswer_sleep = 5
 ; 自动切换播放线路
 internet_line = 公网1
 ```
+
+
+### 源码运行(python)
+
+#### python >= 3.6
+
+0. 安装必要库`pip install - requirements.txt`
+1. 运行`python rest_console.py`
