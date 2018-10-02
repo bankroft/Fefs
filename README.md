@@ -10,7 +10,7 @@
 
 ## 使用方法：
 0. 修改`raccount.txt`文件，内容为若快平台账号和密码，格式为username|password
-1. 配置`config.ini`[内容](#config文件)(文件内有各项注释)
+1. 配置`config.ini`[内容](#config.ini说明)(文件内有各项注释)
 2. 运行`rest_console.exe`文件
 3. 打开release下载的`erya console`文件，运行`index.html`
 
@@ -31,7 +31,7 @@
 或者你中间遇到了其他类型题目，可以直接把账号给我专门添加这种类型，前提是   不要回答你遇到的题目
 
 
-### config.ini说明[](#config文件)
+### config.ini说明
 
 ```ini
 [Server]
