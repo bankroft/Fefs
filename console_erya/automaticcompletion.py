@@ -159,11 +159,11 @@ class AutomaticCompletion(threading.Thread):
                 break
             self.switch_to_video_frame()
             if self.play_status()[0]:
-                print(1)
+                # print(1)
                 last_opt = None
             else:
                 try:
-                    print(12)
+                    # print(12)
                     # 视频因格式不支持或者服务器或网络的问题无法加载。
                     text = self.driver.find_element_by_xpath('//*[@aria-label="弹窗"]/div[2]/div').text.strip()
                     # 是否正确切换线路
@@ -190,17 +190,17 @@ class AutomaticCompletion(threading.Thread):
                     pass
                 except IndexError:
                     pass
-                print(123)
+                # print(123)
                 try:
                     text = self.driver.find_element_by_xpath('//div[@class="ans-videoquiz-title"]').text.strip()
-                    print(33)
+                    # print(33)
                     last_opt = 'a'
                     if text[1:4] == '判断题':
                         self.answer_video(text[1:4])
                     continue
                 except common.exceptions.NoSuchElementException:
                     pass
-                print(2)
+                # print(2)
                 if last_opt == 's':
                     return False
                 logger.info(log_template, '点击视频', '启动', '成功')
