@@ -66,3 +66,5 @@ noanswer_sleep = 5
 internet_line = 公网1
 ```
 
+## Contributor
+感谢[@ningyuv](https://github.com/ningyuv '2018-10-5')为本项目提供的视频内答题统一解决办法
