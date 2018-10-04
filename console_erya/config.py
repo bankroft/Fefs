@@ -129,6 +129,9 @@ location_video_test_submit1_3 = (490, 300, 540, 330)
 # 入口url
 entrance_url = 'https://passport2.chaoxing.com/login?fid=145&refer=http://i.mooc.chaoxing.com'
 
+# 视频答题获取URL
+video_answer_url = 'https://mooc1-1.chaoxing.com/richvideo/initdatawithviewer?mid={0}&_dc={1}'
+
 
 # # 刷新验证码
 # refresh_code = {

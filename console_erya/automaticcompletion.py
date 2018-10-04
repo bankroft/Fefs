@@ -11,7 +11,12 @@ from PIL import Image
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium import common
 from random import randint
+import requests
 
+
+headers = {
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.100 Safari/537.36'
+}
 
 class AutomaticCompletion(threading.Thread):
     # 生成choices(string.printable, k=16)
@@ -95,34 +100,53 @@ class AutomaticCompletion(threading.Thread):
             return False, 'not play'
         return True, 'playing'
 
-    def answer_video(self, qt):
+    def answer_video(self, qt=None):
         """
 
         :param qt:题目类型
         :return:
         """
-        if qt == '判断题':
-            # 正确
-            self.driver.find_element_by_xpath('//div[@class="ans-videoquiz-title"]/../ul/li[1]/label').click()
-            # self.driver.find_element_by_xpath('//*[@id="videoquiz-1038"]/ul/li[1]/label').click()
-            # 提交按钮
-            self.driver.find_element_by_xpath('//div[@class="ans-videoquiz-title"]/../div[2]').click()
-            # self.driver.find_element_by_xpath('//*[@id="ext-gen1049"]').click()
-            try:
-                alert = self.driver.switch_to.alert
-                # 回答错误
-                if alert.text.strip() == '回答有错误':
-                    alert.accept()
-                else:
-                    alert.accept()
-                # 错误
-                self.driver.find_element_by_xpath('//div[@class="ans-videoquiz-title"]/../ul/li[2]/label').click()
-                # self.driver.find_element_by_xpath('//*[@id="videoquiz-1038"]/ul/li[2]/label').click()
-                # 提交按钮
-                self.driver.find_element_by_xpath('//div[@class="ans-videoquiz-title"]/../div[2]').click()
-                # self.driver.find_element_by_xpath('//*[@id="ext-gen1049"]').click()
-            except common.exceptions.NoAlertPresentException:
-                pass
+        # if qt == '判断题':
+        #     # 正确
+        #     self.driver.find_element_by_xpath('//div[@class="ans-videoquiz-title"]/../ul/li[1]/label').click()
+        #     # self.driver.find_element_by_xpath('//*[@id="videoquiz-1038"]/ul/li[1]/label').click()
+        #     # 提交按钮
+        #     self.driver.find_element_by_xpath('//div[@class="ans-videoquiz-title"]/../div[2]').click()
+        #     # self.driver.find_element_by_xpath('//*[@id="ext-gen1049"]').click()
+        #     try:
+        #         alert = self.driver.switch_to.alert
+        #         # 回答错误
+        #         if alert.text.strip() == '回答有错误':
+        #             alert.accept()
+        #         else:
+        #             alert.accept()
+        #         # 错误
+        #         self.driver.find_element_by_xpath('//div[@class="ans-videoquiz-title"]/../ul/li[2]/label').click()
+        #         # self.driver.find_element_by_xpath('//*[@id="videoquiz-1038"]/ul/li[2]/label').click()
+        #         # 提交按钮
+        #         self.driver.find_element_by_xpath('//div[@class="ans-videoquiz-title"]/../div[2]').click()
+        #         # self.driver.find_element_by_xpath('//*[@id="ext-gen1049"]').click()
+        #     except common.exceptions.NoAlertPresentException:
+        #         pass
+        self.driver.switch_to.default_content()
+        self.driver.switch_to.frame(self.driver.find_element_by_tag_name('iframe'))
+        mid = self.driver.find_element_by_tag_name('iframe').get_attribute('mid')
+        dc = int(time.time()*1000)
+        res = requests.get(url=video_answer_url.format(mid, dc), headers=headers).json()
+        logger.info(log_template, '视频答题', res[0]['datas'][0]['description'], '正在处理')
+        # if res[0]['datas'][0]['questionType'].strip() == '判断题':
+        #     if res[0]['datas'][0]['options'][0]['isRight']:
+        #         self.driver.find_element_by_xpath('//div[@class="ans-videoquiz-title"]/../ul/li[1]/label').click()
+        self.switch_to_video_frame()
+        for k, d in enumerate(res[0]['datas'][0]['options']):
+            # print(1)
+            if d['isRight']:
+                # print(2, k, d)
+                self.driver.find_element_by_xpath('//div[@class="ans-videoquiz-title"]/../ul/li[' + str(k+1) + ']/label').click()
+        # print(3)
+        self.driver.find_element_by_xpath('//div[@class="ans-videoquiz-title"]/../div[2]').click()
+        # print(4)
+        logger.info(log_template, '视频答题', res[0]['datas'][0]['description'], '回答完成')
 
     def click_video(self):
         self.driver.switch_to.default_content()
@@ -192,11 +216,13 @@ class AutomaticCompletion(threading.Thread):
                     pass
                 # print(123)
                 try:
-                    text = self.driver.find_element_by_xpath('//div[@class="ans-videoquiz-title"]').text.strip()
+                    # text = self.driver.find_element_by_xpath('//div[@class="ans-videoquiz-title"]').text.strip()
                     # print(33)
+                    self.driver.find_element_by_xpath('//div[@class="ans-videoquiz-title"]')
+                    self.answer_video()
                     last_opt = 'a'
-                    if text[1:4] == '判断题':
-                        self.answer_video(text[1:4])
+                    # if text[1:4] == '判断题':
+                        # self.answer_video(text[1:4])
                     continue
                 except common.exceptions.NoSuchElementException:
                     pass
