@@ -1,14 +1,13 @@
 ## 软件下载
 
-[下载地址](https://github.com/bankroft/chaoxing-MOOC-beta/releases)
-
-#### *attention*
-- 下载`erya-*-pyinstaller-F.zip`
-- 下载`erya-console.zip`
+- 下载[`erya-*-pyinstaller-F.zip`](https://github.com/bankroft/chaoxing-MOOC-beta/releases)
+- 下载[`erya-console.zip`](https://github.com/bankroft/erya-console/archive/1.0.zip)
 
 解压文件
 
 ## 使用方法：
+
+### exe运行
 0. 安装`chrome` 版本`v68-70`
 0. 修改`raccount.txt`文件，内容为若快平台账号和密码，格式为username|password
 1. 配置`config.ini`[内容](#config.ini注释)(文件内有各项注释)
