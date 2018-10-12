@@ -1,7 +1,7 @@
 ## 软件下载
 
 - 下载[`erya-*-pyinstaller-F.zip`](https://github.com/bankroft/chaoxing-MOOC-beta/releases)
-- 下载[`erya-console.zip`](https://github.com/bankroft/erya-console/archive/1.0.zip)
+- 下载[`erya-console.zip`](https://github.com/bankroft/erya-console)
 
 解压文件
 
