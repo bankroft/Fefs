@@ -18,7 +18,7 @@
 
 #### python >= 3.6
 
-0. 安装必要库`pip install - requirements.txt`
+0. 安装必要库`pip install -r requirements.txt`
 1. 运行`python rest_console.py`
 
 ## 版本更新记录
