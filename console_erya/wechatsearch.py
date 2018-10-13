@@ -8,6 +8,7 @@ from .config import wechat_mp
 import time
 from logzero import logger
 import sys
+import os
 r = '[\s+\.\!\/_,$%^*(+\"\']+|[+——！，。？、~@#￥%……&*（）“”]+'
 r2 = '(?<!/)&'
 
@@ -20,7 +21,12 @@ messages = []
 
 
 bot = Bot(cache_path=True, console_qr=1)
-target = [ensure_one(bot.search(x)) for x in wechat_mp]
+try:
+    target = [ensure_one(bot.search(x)) for x in wechat_mp]
+except ValueError:
+    print('请先关注config.ini文件里所配置的wechat公众号，如已关注请反馈改BUG')
+    os.system('pause')
+    sys.exit(0)
 
 
 def run_wechat():

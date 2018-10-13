@@ -9,7 +9,6 @@
 
 ### exe运行
 0. 安装`chrome` 版本`v68-70`
-0. 修改`raccount.txt`文件，内容为若快平台账号和密码，格式为username|password
 1. 配置`config.ini`[内容](#config.ini注释)(请勿使用windows自带的笔记本编辑。推荐使用notepad++，编码为UTF-8无BOM)
 2. 运行`rest_console.exe`文件
 3. 打开release下载的`erya console`文件，运行`index.html`
