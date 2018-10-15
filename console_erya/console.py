@@ -35,7 +35,8 @@ class Console:
         # options.add_argument('--headless')
         # options.add_argument('--disable-gpu')
         options.add_experimental_option("prefs", prefs)
-        self.driver = webdriver.Chrome(chrome_drive_path, chrome_options=options)
+        # self.driver = webdriver.Chrome(chrome_drive_path, chrome_options=options)
+        self.driver = webdriver.Chrome(chrome_drive_path)
         self.driver.implicitly_wait(timeout)
         try:
             self.driver.set_window_size(1920, 1080)

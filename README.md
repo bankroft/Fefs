@@ -30,7 +30,7 @@
 
 [我的博客](https://www.bankroft.cn/?p=37, "my blog")
 
-## 交流反馈群
+## 交流反馈群(新版打包会先发到群里)
 
 ![二维码](https://i.loli.net/2018/10/08/5bbb1cb62dc66.png)
 
