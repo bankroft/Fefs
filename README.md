@@ -1,16 +1,22 @@
 ## 软件下载
 
-- 下载[`erya-*-pyinstaller-F.zip`](https://github.com/bankroft/chaoxing-MOOC-beta/releases)
-- 下载[`erya-console.zip`](https://github.com/bankroft/erya-console)
+#### 链接1
 
-解压文件
+- [`erya-*-pyinstaller-F.zip`](https://github.com/bankroft/chaoxing-MOOC-beta/releases)
+- [`erya-console.zip`](https://github.com/bankroft/erya-console)
+
+#### 链接2
+
+- OneDrive[`chaoxing tools`](https://1drv.ms/f/s!Avzz1Vbw4dVFkIZID8yjlW684QWL2g)
+
+**解压文件**
 
 ## 使用方法：
 
 ### exe运行
 0. 安装`chrome` 版本`v68-70`
-1. 配置`config.ini`[内容](#configini注释)(请勿使用windows自带的笔记本编辑。推荐使用notepad++，编码为UTF-8无BOM)
-2. 运行`rest_console.exe`文件
+1. 配置`config.ini`中查题微信公众号([我的博客](https://www.bankroft.cn/?p=37, "my blog")有推荐)[内容](#configini注释)(请勿使用windows自带的笔记本编辑。推荐使用notepad++，编码为UTF-8无BOM)
+2. 运行`rest_console.exe`文件(如果配置了微信公众号，打开的窗口有二维码，请使用微信扫描)
 3. 打开release下载的`erya console`文件，运行`index.html`
 
 ### 源码运行(python)

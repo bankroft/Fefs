@@ -234,224 +234,6 @@ class AutomaticCompletion(threading.Thread):
                 last_opt = 's'
         return True
 
-    def __watch_bak(self):
-        # self.driver.switch_to.window(self.driver.window_handles[0])
-        # self.driver.execute_script(self.__js.format(lesson))
-        # for x in self.driver.window_handles:
-        #     self.driver.switch_to.window(x)
-        #     if x == learn_page_title:
-        #         break
-        self.driver.switch_to.default_content()
-        # 视频学习部分
-        try:
-            self.driver.find_element(learn_page_video_button['type'], learn_page_video_button['string']).click()
-        except common.exceptions.NoSuchElementException:
-            return True
-        status = 0
-        self.__screenshot_video(os.path.join(folder_temp_path, str(status % 2) + '.png'))
-        while True:
-            # if debug:
-            #     self.driver.get_screenshot_as_file(os.path.join(folder_temp_path, time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()).__str__() + '.png'))
-            status += 1
-            try:
-                self.driver.switch_to.default_content()
-                for x in learn_page_video_part_iframe:
-                    # driver.switch_to.frame(driver.find_elements_by_tag_name(x['name'])[x['index']])
-                    self.driver.switch_to.frame(self.driver.find_elements_by_tag_name(x['name'])[x['index']])
-                self.driver.find_element(video_complete_status['type'], video_complete_status['string'])
-                break
-            except common.exceptions.NoSuchElementException:
-                pass
-            self.driver.switch_to.default_content()
-            for x in learn_page_video_iframe:
-                # driver.switch_to.frame(driver.find_elements_by_tag_name(x['name'])[x['index']])
-                self.driver.switch_to.frame(self.driver.find_elements_by_tag_name(x['name'])[x['index']])
-            self.__screenshot_video(os.path.join(folder_temp_path, str(status % 2) + '.png'))
-            if imagehash.average_hash(Image.open(os.path.join(folder_temp_path, str(status % 2) + '.png'))) - imagehash.average_hash(Image.open(os.path.join(folder_temp_path, str((status+1) % 2) + '.png'))) != 0:
-                time.sleep(5)
-            elif Image.open(os.path.join(folder_temp_path, str(status % 2) + '.png')).crop(video_progress_bar1).tobytes() != Image.open(os.path.join(folder_temp_path, str((status + 1) % 2) + '.png')).crop(video_progress_bar1).tobytes():
-                time.sleep(5)
-            else:
-                self.__screenshot_video(screen_png)
-                i1 = Image.open(screen_png)
-                # 剪切答题提交
-                # 两个选项一行title验证
-                i2_1 = i1.crop(location_video_test_submit1_1)
-                # 两个选项两行title验证
-                i2_2 = i1.crop(location_video_test_submit2_1)
-                # 两个选项三行title验证
-                i2_3 = i1.crop(location_video_test_submit3_1)
-                # 三个选项一行title验证
-                i3_1 = i1.crop(location_video_test_submit1_3)
-                # 四个选项一行title
-                i4_1 = i1.crop(location_video_test_submit1_4)
-                # i2_2 = i1.crop(site_video_test_submit2)
-                # i2_3 = i1.crop(site_video_test_submit3)
-                # 两个选项一行title
-                if (imagehash.average_hash(i2_1) - imagehash.average_hash(Image.open(video_test_submit1_1))) <= 8:
-                    # (imagehash.average_hash(i2_1) - imagehash.average_hash(Image.open(video_test_submit1_2))) <= 5
-                    # (imagehash.average_hash(i2_3) - imagehash.average_hash(Image.open(video_test_submit1_3))) <= 5:
-                    logger.info(log_template, '视频内答题', '一行title', 'Start')
-                    # A
-                    ActionChains(self.driver).move_to_element_with_offset(self.driver.find_element_by_tag_name('object'), 260, 124).click().perform()
-                    time.sleep(1)
-                    # 提交
-                    ActionChains(self.driver).move_to_element_with_offset(self.driver.find_element_by_tag_name('object'), 508, 252).click().perform()
-                    time.sleep(1)
-                    # B
-                    ActionChains(self.driver).move_to_element_with_offset(self.driver.find_element_by_tag_name('object'), 260, 184).click().perform()
-                    time.sleep(1)
-                    # 提交
-                    ActionChains(self.driver).move_to_element_with_offset(self.driver.find_element_by_tag_name('object'), 508, 252).click().perform()
-                    time.sleep(1)
-                    # 继续
-                    ActionChains(self.driver).move_to_element_with_offset(self.driver.find_element_by_tag_name('object'), 508, 252).click().perform()
-                    time.sleep(1)
-                # 两个选项两行title
-                elif (imagehash.average_hash(i2_2) - imagehash.average_hash(Image.open(video_test_submit2_1))) <= 5:
-                    logger.info(log_template, '视频内答题', '两行title', 'Start')
-                    # A
-                    ActionChains(self.driver).move_to_element_with_offset(self.driver.find_element_by_tag_name('object'), 260, 167).click().perform()
-                    time.sleep(1)
-                    # 提交
-                    ActionChains(self.driver).move_to_element_with_offset(self.driver.find_element_by_tag_name('object'), 508, 295).click().perform()
-                    time.sleep(1)
-                    # B
-                    ActionChains(self.driver).move_to_element_with_offset(self.driver.find_element_by_tag_name('object'), 260, 217).click().perform()
-                    time.sleep(1)
-                    # 提交
-                    ActionChains(self.driver).move_to_element_with_offset(self.driver.find_element_by_tag_name('object'), 508, 295).click().perform()
-                    time.sleep(1)
-                    # 提交
-                    ActionChains(self.driver).move_to_element_with_offset(self.driver.find_element_by_tag_name('object'), 508, 295).click().perform()
-                    time.sleep(1)
-                    # self.driver.get_screenshot_as_file(screen_png)
-                    # i1 = Image.open(screen_png)
-                    # i4_2 = i1.crop(size_video_continue2)
-                    # if (imagehash.average_hash(i4_2) - imagehash.average_hash(Image.open(video_test_continue2))) <= 5:
-                    #     # (260, 167) A
-                    #     # (260, 217) B
-                    #     logger.info(log_template, '视频内答题', 'A', 'Right')
-                    #     # 点继续
-                    #     ActionChains(self.driver).move_to_element_with_offset(self.driver.find_element_by_tag_name('object'), 508, 295).click().perform()
-                    # else:
-                    #     logger.info(log_template, '视频内答题', 'A', 'Wrong')
-                    #     # B
-                    #     ActionChains(self.driver).move_to_element_with_offset(self.driver.find_element_by_tag_name('object'), 260, 217).click().perform()
-                    #     time.sleep(1)
-                    #     # 提交
-                    #     ActionChains(self.driver).move_to_element_with_offset(self.driver.find_element_by_tag_name('object'), 508, 295).click().perform()
-                    #     time.sleep(1)
-                    #     # 继续
-                    #     ActionChains(self.driver).move_to_element_with_offset(self.driver.find_element_by_tag_name('object'), 508, 295).click().perform()
-                # 两个选项三行title
-                elif (imagehash.average_hash(i2_3) - imagehash.average_hash(Image.open(video_test_submit3_1))) <= 5:
-                    logger.info(log_template, '视频内答题', '三行title', 'Start')
-                    # A
-                    ActionChains(self.driver).move_to_element_with_offset(self.driver.find_element_by_tag_name('object'), 260, 191).click().perform()
-                    time.sleep(1)
-                    # 提交
-                    ActionChains(self.driver).move_to_element_with_offset(self.driver.find_element_by_tag_name('object'), 508, 319).click().perform()
-                    time.sleep(1)
-                    # B
-                    ActionChains(self.driver).move_to_element_with_offset(self.driver.find_element_by_tag_name('object'), 260, 241).click().perform()
-                    time.sleep(1)
-                    # 提交
-                    ActionChains(self.driver).move_to_element_with_offset(self.driver.find_element_by_tag_name('object'), 508, 319).click().perform()
-                    time.sleep(1)
-                    # 提交
-                    ActionChains(self.driver).move_to_element_with_offset(self.driver.find_element_by_tag_name('object'), 508, 319).click().perform()
-                    time.sleep(1)
-                # 三个选项一行title
-                elif (imagehash.average_hash(i3_1) - imagehash.average_hash(Image.open(video_test_submit1_3))) <= 5:
-                    # A
-                    ActionChains(self.driver).move_to_element_with_offset(self.driver.find_element_by_tag_name('object'), 260, 135).click().perform()
-                    time.sleep(1)
-                    # 继续
-                    ActionChains(self.driver).move_to_element_with_offset(self.driver.find_element_by_tag_name('object'), 508, 314).click().perform()
-                    time.sleep(1)
-                    # B
-                    ActionChains(self.driver).move_to_element_with_offset(self.driver.find_element_by_tag_name('object'), 260, 185).click().perform()
-                    time.sleep(1)
-                    # 继续
-                    ActionChains(self.driver).move_to_element_with_offset(self.driver.find_element_by_tag_name('object'), 508, 314).click().perform()
-                    time.sleep(1)
-                    # C
-                    ActionChains(self.driver).move_to_element_with_offset(self.driver.find_element_by_tag_name('object'), 260, 237).click().perform()
-                    time.sleep(1)
-                    # 继续
-                    ActionChains(self.driver).move_to_element_with_offset(self.driver.find_element_by_tag_name('object'), 508, 314).click().perform()
-                    time.sleep(1)
-                    # 继续
-                    ActionChains(self.driver).move_to_element_with_offset(self.driver.find_element_by_tag_name('object'), 508, 314).click().perform()
-                    time.sleep(1)
-                # 四个选项一行title
-                elif (imagehash.average_hash(i4_1) - imagehash.average_hash(Image.open(video_test_submit1_4))) <= 5:
-                    logger.info(log_template, '视频内答题', '四个选项一行title', 'Start')
-                    # A
-                    ActionChains(self.driver).move_to_element_with_offset(self.driver.find_element_by_tag_name('object'), 260, 135).click().perform()
-                    time.sleep(1)
-                    # 继续
-                    ActionChains(self.driver).move_to_element_with_offset(self.driver.find_element_by_tag_name('object'), 508, 365).click().perform()
-                    time.sleep(1)
-                    # B
-                    ActionChains(self.driver).move_to_element_with_offset(self.driver.find_element_by_tag_name('object'), 260, 186).click().perform()
-                    time.sleep(1)
-                    # 继续
-                    ActionChains(self.driver).move_to_element_with_offset(self.driver.find_element_by_tag_name('object'), 508, 365).click().perform()
-                    time.sleep(1)
-                    # C
-                    ActionChains(self.driver).move_to_element_with_offset(self.driver.find_element_by_tag_name('object'), 260, 237).click().perform()
-                    time.sleep(1)
-                    # 继续
-                    ActionChains(self.driver).move_to_element_with_offset(self.driver.find_element_by_tag_name('object'), 508, 365).click().perform()
-                    time.sleep(1)
-                    # D
-                    ActionChains(self.driver).move_to_element_with_offset(self.driver.find_element_by_tag_name('object'), 260, 288).click().perform()
-                    time.sleep(1)
-                    # 继续
-                    ActionChains(self.driver).move_to_element_with_offset(self.driver.find_element_by_tag_name('object'), 508, 365).click().perform()
-                    time.sleep(1)
-                # 四个选项两行title，无图片无法识别，待定
-                # elif (imagehash.average_hash(i4_1) - imagehash.average_hash(Image.open(video_test_submit1_4))) <= 5:
-                #     logger.info(log_template, '视频内答题', '四个选项两行title', 'Start')
-                #     # A
-                #     ActionChains(self.driver).move_to_element_with_offset(self.driver.find_element_by_tag_name('object'), 260, 167).click().perform()
-                #     time.sleep(1)
-                #     # 继续
-                #     ActionChains(self.driver).move_to_element_with_offset(self.driver.find_element_by_tag_name('object'), 508, 397).click().perform()
-                #     time.sleep(1)
-                #     # B
-                #     ActionChains(self.driver).move_to_element_with_offset(self.driver.find_element_by_tag_name('object'), 260, 218).click().perform()
-                #     time.sleep(1)
-                #     # 继续
-                #     ActionChains(self.driver).move_to_element_with_offset(self.driver.find_element_by_tag_name('object'), 508, 397).click().perform()
-                #     time.sleep(1)
-                #     # C
-                #     ActionChains(self.driver).move_to_element_with_offset(self.driver.find_element_by_tag_name('object'), 260, 269).click().perform()
-                #     time.sleep(1)
-                #     # 继续
-                #     ActionChains(self.driver).move_to_element_with_offset(self.driver.find_element_by_tag_name('object'), 508, 397).click().perform()
-                #     time.sleep(1)
-                #     # D
-                #     ActionChains(self.driver).move_to_element_with_offset(self.driver.find_element_by_tag_name('object'), 260, 320).click().perform()
-                #     time.sleep(1)
-                #     # 继续
-                #     ActionChains(self.driver).move_to_element_with_offset(self.driver.find_element_by_tag_name('object'), 508, 397).click().perform()
-                #     time.sleep(1)
-                elif (imagehash.average_hash(i1.crop(location_video_pause_continue1)) - imagehash.average_hash(Image.open(video_pause_continue1))) <= 8:
-                    logger.info(log_template, '视频播放', '点击播放按钮', '点击')
-                    self.driver.switch_to.default_content()
-                    for x in player_iframe:
-                        self.driver.switch_to.frame(self.driver.find_elements_by_tag_name(x['name'])[x['index']])
-                    self.driver.find_element_by_tag_name('object').click()
-                else:
-                    # logger.info(log_template, '视频播放', '刷新页面', '刷新')
-                    # self.driver.refresh()
-                    return False
-        # self.driver.close()
-        return True
-
     def __answer(self):
         sleep_time = 10
         self.driver.switch_to.default_content()
@@ -502,6 +284,9 @@ class AutomaticCompletion(threading.Thread):
                 break
             title = tmp.find_element_by_class_name('clearfix').text.strip('1234567890').replace('\n', '').strip()
             test_type = title[1:4]
+            if test_type not in ['判断题', '单选题', '多选题']:
+                logger.error(log_template, '查询', test_type + '\t暂不支持', '跳过')
+                continue
             logger.info(log_template, '正在请求服务器/微信公众号', '查询: ' + title, '...')
             right_answer = query_http_server(op='query', test_type=test_type, title=title[5:])
             if test_type == '判断题':
@@ -511,7 +296,8 @@ class AutomaticCompletion(threading.Thread):
                 else:
                     logger.info(log_template, '判断', 'Title:  ' + title, 'answer:  ' + '错误')
                     tmp.find_elements_by_tag_name('ul')[0].find_elements_by_tag_name('label')[1].click()
-            elif test_type in ['单选题', '多选题']:
+            # elif test_type in ['单选题', '多选题']:
+            else:
                 tag = 0
                 if right_answer:
                     logger.info(log_template, '查询到', 'Title:  ' + title, '答案:  ' + '\t'.join(right_answer))
@@ -524,8 +310,8 @@ class AutomaticCompletion(threading.Thread):
                     sleep_time = 60*noanswer_sleep
                     # 未搜索到该题目答案，随机选择一项
                     tmp.find_elements_by_tag_name('ul')[0].find_elements_by_tag_name('li')[randint(0, len(tmp.find_elements_by_tag_name('ul')[0].find_elements_by_tag_name('li'))-1)].click()
-            else:
-                logger.error(log_template, '查询', test_type + '\t暂不支持', '跳过')
+            # else:
+            #     logger.error(log_template, '查询', test_type + '\t暂不支持', '跳过')
         # 提交部分
         logger.info(log_template, '提交章节测试', '如果有未查到的单/多选题会等待{0}分钟提交，默认10s后提交'.format(noanswer_sleep.__str__()), '等待')
         time.sleep(sleep_time)
@@ -567,6 +353,11 @@ class AutomaticCompletion(threading.Thread):
             # driver.switch_to.frame(driver.find_elements_by_tag_name(x['name'])[x['index']])
             self.driver.switch_to.frame(self.driver.find_elements_by_tag_name(x['name'])[x['index']])
         for x in self.driver.find_elements_by_class_name('TiMu'):
+            title = x.find_elements_by_tag_name('div')[1].text.strip().replace('\n', '')
+            test_type = title[1:4]
+            if test_type not in ['判断题', '单选题', '多选题']:
+                logger.error(log_template, '更新题库', '暂不支持：' + test_type, '跳过')
+                continue
             try:
                 # 选择题正确icon
                 right_or_wrong = x.find_element_by_tag_name('form').find_element_by_tag_name('div').find_element_by_tag_name('i').get_attribute('class')
@@ -574,15 +365,14 @@ class AutomaticCompletion(threading.Thread):
                 # 判断题正确icon
                 right_or_wrong = x.find_elements_by_tag_name('div')[4].find_elements_by_tag_name('i')[1].get_attribute('class')
             if right_or_wrong == 'fr dui':
-                title = x.find_elements_by_tag_name('div')[1].text.strip().replace('\n', '')
                 my_answer = x.find_elements_by_tag_name('div')[4].text.split('\n')[0].strip('我的答案：').strip()
-                test_type = title[1:4]
                 if test_type == '判断题':
                     if query_http_server(op='update', title=title[5:], test_type=test_type, answer=my_answer.strip()):
                         logger.info(log_template, '更新题库', title + '\t答案: ' + my_answer, '\t成功')
                     else:
                         logger.info(log_template, '更新题库', title + '\t答案: ' + my_answer, '\t失败')
-                elif test_type in ['单选题', '多选题']:
+                # elif test_type in ['单选题', '多选题']:
+                else:
                     ma = re.findall('[{0}]'.format(self.__select), my_answer)
                     r = []
                     for y in ma:
@@ -592,8 +382,8 @@ class AutomaticCompletion(threading.Thread):
                         logger.info(log_template, '更新题库', title + '\t答案: ' + answer, '\t成功')
                     else:
                         logger.info(log_template, '更新题库', title + '\t答案: ' + answer, '\t失败')
-                else:
-                    logger.error(log_template, '更新题库', '暂不支持：' + test_type, '跳过')
+                # else:
+                #     logger.error(log_template, '更新题库', '暂不支持：' + test_type, '跳过')
             elif right_or_wrong == 'fr bandui':
                 pass
 
@@ -618,3 +408,222 @@ class AutomaticCompletion(threading.Thread):
             os.remove('tmp.png')
         except (FileNotFoundError, PermissionError):
             pass
+
+
+#     def __watch_bak(self):
+#         # self.driver.switch_to.window(self.driver.window_handles[0])
+#         # self.driver.execute_script(self.__js.format(lesson))
+#         # for x in self.driver.window_handles:
+#         #     self.driver.switch_to.window(x)
+#         #     if x == learn_page_title:
+#         #         break
+#         self.driver.switch_to.default_content()
+#         # 视频学习部分
+#         try:
+#             self.driver.find_element(learn_page_video_button['type'], learn_page_video_button['string']).click()
+#         except common.exceptions.NoSuchElementException:
+#             return True
+#         status = 0
+#         self.__screenshot_video(os.path.join(folder_temp_path, str(status % 2) + '.png'))
+#         while True:
+#             # if debug:
+#             #     self.driver.get_screenshot_as_file(os.path.join(folder_temp_path, time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()).__str__() + '.png'))
+#             status += 1
+#             try:
+#                 self.driver.switch_to.default_content()
+#                 for x in learn_page_video_part_iframe:
+#                     # driver.switch_to.frame(driver.find_elements_by_tag_name(x['name'])[x['index']])
+#                     self.driver.switch_to.frame(self.driver.find_elements_by_tag_name(x['name'])[x['index']])
+#                 self.driver.find_element(video_complete_status['type'], video_complete_status['string'])
+#                 break
+#             except common.exceptions.NoSuchElementException:
+#                 pass
+#             self.driver.switch_to.default_content()
+#             for x in learn_page_video_iframe:
+#                 # driver.switch_to.frame(driver.find_elements_by_tag_name(x['name'])[x['index']])
+#                 self.driver.switch_to.frame(self.driver.find_elements_by_tag_name(x['name'])[x['index']])
+#             self.__screenshot_video(os.path.join(folder_temp_path, str(status % 2) + '.png'))
+#             if imagehash.average_hash(Image.open(os.path.join(folder_temp_path, str(status % 2) + '.png'))) - imagehash.average_hash(Image.open(os.path.join(folder_temp_path, str((status+1) % 2) + '.png'))) != 0:
+#                 time.sleep(5)
+#             elif Image.open(os.path.join(folder_temp_path, str(status % 2) + '.png')).crop(video_progress_bar1).tobytes() != Image.open(os.path.join(folder_temp_path, str((status + 1) % 2) + '.png')).crop(video_progress_bar1).tobytes():
+#                 time.sleep(5)
+#             else:
+#                 self.__screenshot_video(screen_png)
+#                 i1 = Image.open(screen_png)
+#                 # 剪切答题提交
+#                 # 两个选项一行title验证
+#                 i2_1 = i1.crop(location_video_test_submit1_1)
+#                 # 两个选项两行title验证
+#                 i2_2 = i1.crop(location_video_test_submit2_1)
+#                 # 两个选项三行title验证
+#                 i2_3 = i1.crop(location_video_test_submit3_1)
+#                 # 三个选项一行title验证
+#                 i3_1 = i1.crop(location_video_test_submit1_3)
+#                 # 四个选项一行title
+#                 i4_1 = i1.crop(location_video_test_submit1_4)
+#                 # i2_2 = i1.crop(site_video_test_submit2)
+#                 # i2_3 = i1.crop(site_video_test_submit3)
+#                 # 两个选项一行title
+#                 if (imagehash.average_hash(i2_1) - imagehash.average_hash(Image.open(video_test_submit1_1))) <= 8:
+#                     # (imagehash.average_hash(i2_1) - imagehash.average_hash(Image.open(video_test_submit1_2))) <= 5
+#                     # (imagehash.average_hash(i2_3) - imagehash.average_hash(Image.open(video_test_submit1_3))) <= 5:
+#                     logger.info(log_template, '视频内答题', '一行title', 'Start')
+#                     # A
+#                     ActionChains(self.driver).move_to_element_with_offset(self.driver.find_element_by_tag_name('object'), 260, 124).click().perform()
+#                     time.sleep(1)
+#                     # 提交
+#                     ActionChains(self.driver).move_to_element_with_offset(self.driver.find_element_by_tag_name('object'), 508, 252).click().perform()
+#                     time.sleep(1)
+#                     # B
+#                     ActionChains(self.driver).move_to_element_with_offset(self.driver.find_element_by_tag_name('object'), 260, 184).click().perform()
+#                     time.sleep(1)
+#                     # 提交
+#                     ActionChains(self.driver).move_to_element_with_offset(self.driver.find_element_by_tag_name('object'), 508, 252).click().perform()
+#                     time.sleep(1)
+#                     # 继续
+#                     ActionChains(self.driver).move_to_element_with_offset(self.driver.find_element_by_tag_name('object'), 508, 252).click().perform()
+#                     time.sleep(1)
+#                 # 两个选项两行title
+#                 elif (imagehash.average_hash(i2_2) - imagehash.average_hash(Image.open(video_test_submit2_1))) <= 5:
+#                     logger.info(log_template, '视频内答题', '两行title', 'Start')
+#                     # A
+#                     ActionChains(self.driver).move_to_element_with_offset(self.driver.find_element_by_tag_name('object'), 260, 167).click().perform()
+#                     time.sleep(1)
+#                     # 提交
+#                     ActionChains(self.driver).move_to_element_with_offset(self.driver.find_element_by_tag_name('object'), 508, 295).click().perform()
+#                     time.sleep(1)
+#                     # B
+#                     ActionChains(self.driver).move_to_element_with_offset(self.driver.find_element_by_tag_name('object'), 260, 217).click().perform()
+#                     time.sleep(1)
+#                     # 提交
+#                     ActionChains(self.driver).move_to_element_with_offset(self.driver.find_element_by_tag_name('object'), 508, 295).click().perform()
+#                     time.sleep(1)
+#                     # 提交
+#                     ActionChains(self.driver).move_to_element_with_offset(self.driver.find_element_by_tag_name('object'), 508, 295).click().perform()
+#                     time.sleep(1)
+#                     # self.driver.get_screenshot_as_file(screen_png)
+#                     # i1 = Image.open(screen_png)
+#                     # i4_2 = i1.crop(size_video_continue2)
+#                     # if (imagehash.average_hash(i4_2) - imagehash.average_hash(Image.open(video_test_continue2))) <= 5:
+#                     #     # (260, 167) A
+#                     #     # (260, 217) B
+#                     #     logger.info(log_template, '视频内答题', 'A', 'Right')
+#                     #     # 点继续
+#                     #     ActionChains(self.driver).move_to_element_with_offset(self.driver.find_element_by_tag_name('object'), 508, 295).click().perform()
+#                     # else:
+#                     #     logger.info(log_template, '视频内答题', 'A', 'Wrong')
+#                     #     # B
+#                     #     ActionChains(self.driver).move_to_element_with_offset(self.driver.find_element_by_tag_name('object'), 260, 217).click().perform()
+#                     #     time.sleep(1)
+#                     #     # 提交
+#                     #     ActionChains(self.driver).move_to_element_with_offset(self.driver.find_element_by_tag_name('object'), 508, 295).click().perform()
+#                     #     time.sleep(1)
+#                     #     # 继续
+#                     #     ActionChains(self.driver).move_to_element_with_offset(self.driver.find_element_by_tag_name('object'), 508, 295).click().perform()
+#                 # 两个选项三行title
+#                 elif (imagehash.average_hash(i2_3) - imagehash.average_hash(Image.open(video_test_submit3_1))) <= 5:
+#                     logger.info(log_template, '视频内答题', '三行title', 'Start')
+#                     # A
+#                     ActionChains(self.driver).move_to_element_with_offset(self.driver.find_element_by_tag_name('object'), 260, 191).click().perform()
+#                     time.sleep(1)
+#                     # 提交
+#                     ActionChains(self.driver).move_to_element_with_offset(self.driver.find_element_by_tag_name('object'), 508, 319).click().perform()
+#                     time.sleep(1)
+#                     # B
+#                     ActionChains(self.driver).move_to_element_with_offset(self.driver.find_element_by_tag_name('object'), 260, 241).click().perform()
+#                     time.sleep(1)
+#                     # 提交
+#                     ActionChains(self.driver).move_to_element_with_offset(self.driver.find_element_by_tag_name('object'), 508, 319).click().perform()
+#                     time.sleep(1)
+#                     # 提交
+#                     ActionChains(self.driver).move_to_element_with_offset(self.driver.find_element_by_tag_name('object'), 508, 319).click().perform()
+#                     time.sleep(1)
+#                 # 三个选项一行title
+#                 elif (imagehash.average_hash(i3_1) - imagehash.average_hash(Image.open(video_test_submit1_3))) <= 5:
+#                     # A
+#                     ActionChains(self.driver).move_to_element_with_offset(self.driver.find_element_by_tag_name('object'), 260, 135).click().perform()
+#                     time.sleep(1)
+#                     # 继续
+#                     ActionChains(self.driver).move_to_element_with_offset(self.driver.find_element_by_tag_name('object'), 508, 314).click().perform()
+#                     time.sleep(1)
+#                     # B
+#                     ActionChains(self.driver).move_to_element_with_offset(self.driver.find_element_by_tag_name('object'), 260, 185).click().perform()
+#                     time.sleep(1)
+#                     # 继续
+#                     ActionChains(self.driver).move_to_element_with_offset(self.driver.find_element_by_tag_name('object'), 508, 314).click().perform()
+#                     time.sleep(1)
+#                     # C
+#                     ActionChains(self.driver).move_to_element_with_offset(self.driver.find_element_by_tag_name('object'), 260, 237).click().perform()
+#                     time.sleep(1)
+#                     # 继续
+#                     ActionChains(self.driver).move_to_element_with_offset(self.driver.find_element_by_tag_name('object'), 508, 314).click().perform()
+#                     time.sleep(1)
+#                     # 继续
+#                     ActionChains(self.driver).move_to_element_with_offset(self.driver.find_element_by_tag_name('object'), 508, 314).click().perform()
+#                     time.sleep(1)
+#                 # 四个选项一行title
+#                 elif (imagehash.average_hash(i4_1) - imagehash.average_hash(Image.open(video_test_submit1_4))) <= 5:
+#                     logger.info(log_template, '视频内答题', '四个选项一行title', 'Start')
+#                     # A
+#                     ActionChains(self.driver).move_to_element_with_offset(self.driver.find_element_by_tag_name('object'), 260, 135).click().perform()
+#                     time.sleep(1)
+#                     # 继续
+#                     ActionChains(self.driver).move_to_element_with_offset(self.driver.find_element_by_tag_name('object'), 508, 365).click().perform()
+#                     time.sleep(1)
+#                     # B
+#                     ActionChains(self.driver).move_to_element_with_offset(self.driver.find_element_by_tag_name('object'), 260, 186).click().perform()
+#                     time.sleep(1)
+#                     # 继续
+#                     ActionChains(self.driver).move_to_element_with_offset(self.driver.find_element_by_tag_name('object'), 508, 365).click().perform()
+#                     time.sleep(1)
+#                     # C
+#                     ActionChains(self.driver).move_to_element_with_offset(self.driver.find_element_by_tag_name('object'), 260, 237).click().perform()
+#                     time.sleep(1)
+#                     # 继续
+#                     ActionChains(self.driver).move_to_element_with_offset(self.driver.find_element_by_tag_name('object'), 508, 365).click().perform()
+#                     time.sleep(1)
+#                     # D
+#                     ActionChains(self.driver).move_to_element_with_offset(self.driver.find_element_by_tag_name('object'), 260, 288).click().perform()
+#                     time.sleep(1)
+#                     # 继续
+#                     ActionChains(self.driver).move_to_element_with_offset(self.driver.find_element_by_tag_name('object'), 508, 365).click().perform()
+#                     time.sleep(1)
+#                 # 四个选项两行title，无图片无法识别，待定
+#                 # elif (imagehash.average_hash(i4_1) - imagehash.average_hash(Image.open(video_test_submit1_4))) <= 5:
+#                 #     logger.info(log_template, '视频内答题', '四个选项两行title', 'Start')
+#                 #     # A
+#                 #     ActionChains(self.driver).move_to_element_with_offset(self.driver.find_element_by_tag_name('object'), 260, 167).click().perform()
+#                 #     time.sleep(1)
+#                 #     # 继续
+#                 #     ActionChains(self.driver).move_to_element_with_offset(self.driver.find_element_by_tag_name('object'), 508, 397).click().perform()
+#                 #     time.sleep(1)
+#                 #     # B
+#                 #     ActionChains(self.driver).move_to_element_with_offset(self.driver.find_element_by_tag_name('object'), 260, 218).click().perform()
+#                 #     time.sleep(1)
+#                 #     # 继续
+#                 #     ActionChains(self.driver).move_to_element_with_offset(self.driver.find_element_by_tag_name('object'), 508, 397).click().perform()
+#                 #     time.sleep(1)
+#                 #     # C
+#                 #     ActionChains(self.driver).move_to_element_with_offset(self.driver.find_element_by_tag_name('object'), 260, 269).click().perform()
+#                 #     time.sleep(1)
+#                 #     # 继续
+#                 #     ActionChains(self.driver).move_to_element_with_offset(self.driver.find_element_by_tag_name('object'), 508, 397).click().perform()
+#                 #     time.sleep(1)
+#                 #     # D
+#                 #     ActionChains(self.driver).move_to_element_with_offset(self.driver.find_element_by_tag_name('object'), 260, 320).click().perform()
+#                 #     time.sleep(1)
+#                 #     # 继续
+#                 #     ActionChains(self.driver).move_to_element_with_offset(self.driver.find_element_by_tag_name('object'), 508, 397).click().perform()
+#                 #     time.sleep(1)
+#                 elif (imagehash.average_hash(i1.crop(location_video_pause_continue1)) - imagehash.average_hash(Image.open(video_pause_continue1))) <= 8:
+#                     logger.info(log_template, '视频播放', '点击播放按钮', '点击')
+#                     self.driver.switch_to.default_content()
+#                     for x in player_iframe:
+#                         self.driver.switch_to.frame(self.driver.find_elements_by_tag_name(x['name'])[x['index']])
+#                     self.driver.find_element_by_tag_name('object').click()
+#                 else:
+#                     # logger.info(log_template, '视频播放', '刷新页面', '刷新')
+#                     # self.driver.refresh()
+#                     return False
+#         # self.driver.close()
+#         return True
