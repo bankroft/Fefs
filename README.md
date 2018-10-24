@@ -3,7 +3,6 @@
 #### 链接1
 
 - [`erya-*-pyinstaller-F.zip`](https://github.com/bankroft/chaoxing-MOOC-beta/releases)
-- [`erya-console.zip`](https://github.com/bankroft/erya-console)
 
 #### 链接2
 
@@ -14,17 +13,16 @@
 ## 使用方法：
 
 ### exe运行
-0. 安装`chrome` 版本`v68-70`
-1. 配置`config.ini`中查题微信公众号([我的博客](https://www.bankroft.cn/?p=37, "my blog")有推荐)[内容](#configini注释)(请勿使用windows自带的笔记本编辑。推荐使用notepad++，编码为UTF-8无BOM)
-2. 运行`rest_console.exe`文件(如果配置了微信公众号，打开的窗口有二维码，请使用微信扫描)
-3. 打开release下载的`erya console`文件，运行`index.html`
+1. 安装`chrome` 版本`v68-70`
+2. 运行`rest_console.exe`文件(如果设置了微信公众号，弹出图片请使用微信扫描)
+3. 建议首先选择`设置`功能
 
 ### 源码运行(python)
 
 #### python >= 3.6
 
-0. 安装必要库`pip install -r requirements.txt`
-1. 运行`python rest_console.py`
+1. 安装必要库`pip install -r requirements.txt`
+2. 运行`python rest_console.py`
 
 ## 版本更新记录
 
@@ -37,31 +35,14 @@
 ### config.ini注释
 
 ```ini
-[Server]
-;配置rest监听地址,非必要无需改变
-ip=127.0.0.1
-port=27088
-
 [queryHTTP]
-;配置HTTP查询
+;HTTP查题api
 url_query=http://erya.bankroft.cn/api/query
 url_update=http://erya.bankroft.cn/api/update
 
-[queryMethod]
-;1表示直接连接数据库读取，2表示通过http获取
-m=2
-
-[program]
-debug=False
-
-[wechat]
-; 查题公众号
-wechat = 
-
 [User]
-;是否观看，待定
-watch_video=True
-test_question=True
+; 微信查题公众号
+wechat_mp =
 ; 未查到答案等待时间，单位分钟
 noanswer_sleep = 5
 ; 自动切换播放线路

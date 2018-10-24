@@ -9,8 +9,8 @@ conf = configparser.ConfigParser()
 # print(__file__)
 # print(getcwd())
 conf.read(str(Path(getcwd()) / 'config.ini'), encoding='utf-8')
-ip = conf.get('Server', 'ip')
-port = conf.getint('Server', 'port')
+# ip = conf.get('Server', 'ip')
+# port = conf.getint('Server', 'port')
 
 # chrome 驱动
 chrome_drive_path = str(Path(getcwd()) / 'chromedriver.exe') if not conf.get('chromedriver', 'path', fallback=False) else conf.get('chromedriver', 'path', fallback=False)
@@ -53,14 +53,14 @@ questions_request_update = conf.get('queryHTTP', 'url_update', fallback=False)
 #             table = None
 
 # 微信题库公众号
-wechat_mp = [x for x in conf.get('wechat', 'wechat').split()]
+wechat_mp = [x for x in conf.get('User', 'wechat_mp').split()]
 
 # 未查到答案等待时间
 noanswer_sleep = conf.getint('User', 'noanswer_sleep', fallback=5) if conf.getint('User', 'noanswer_sleep', fallback=5) >= 1 else 5
 
 
 # 开启debug模式(自动截图)
-debug = conf.getboolean('program', 'debug', fallback=False)
+# debug = conf.getboolean('program', 'debug', fallback=False)
 
 # 线路(本校/公网等)
 internet_line = conf.get('User', 'internet_line', fallback='公网1')
@@ -312,13 +312,15 @@ learn_page_test_iframe = [
 # 学习页面[视频]按钮
 learn_page_video_button = {
     'type': 'xpath',
-    'string': '//span[starts-with(@title, "视频")]'
+    'string': '//span[contains(@title, "视频")]'
+    # 'string': '//span[starts-with(@title, "视频")]'
 }
 
 # 学习页面章节测验按钮
 learn_page_test_button = {
     'type': 'xpath',
-    'string': '//span[starts-with(@title, "章节测验")]'
+    'string': '//span[contains(@title, "章节测验")]'
+    # 'string': '//span[starts-with(@title, "章节测验")]'
 }
 
 # 视频完成状态，如果xpath不报错则表示已完成

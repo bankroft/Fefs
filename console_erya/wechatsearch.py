@@ -20,11 +20,12 @@ messages = []
 #         f.write(qrcode)
 
 
-bot = Bot(cache_path=True, console_qr=1)
+# bot = Bot(cache_path=True, console_qr=1)
+bot = Bot(cache_path=True)
 try:
     target = [ensure_one(bot.search(x)) for x in wechat_mp]
 except ValueError:
-    print('请先关注config.ini文件里所配置的wechat公众号，如已关注请反馈改BUG')
+    print('请先关注config.ini文件里所配置的wechat公众号，如已关注请反馈该BUG')
     os.system('pause')
     sys.exit(0)
 

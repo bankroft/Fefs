@@ -25,28 +25,46 @@ class Console:
     __course_lesson = []
 
     def __init__(self):
-        prefs = {
-            "profile.default_content_setting_values.plugins": 1,
-            "profile.content_settings.plugin_whitelist.adobe-flash-player": 1,
-            "profile.content_settings.exceptions.plugins.*,*.per_resource.adobe-flash-player": 1,
-            "PluginsAllowedForUrls": "https://chaoxing.com"
-        }
-        options = webdriver.ChromeOptions()
+        pass
+        # prefs = {
+        #     "profile.default_content_setting_values.plugins": 1,
+        #     "profile.content_settings.plugin_whitelist.adobe-flash-player": 1,
+        #     "profile.content_settings.exceptions.plugins.*,*.per_resource.adobe-flash-player": 1,
+        #     "PluginsAllowedForUrls": "https://chaoxing.com"
+        # }
+        self.options = webdriver.ChromeOptions()
+        self.options.add_argument('log-level=3')
         # options.add_argument('--headless')
         # options.add_argument('--disable-gpu')
-        options.add_experimental_option("prefs", prefs)
+        # options.add_experimental_option("prefs", prefs)
         # self.driver = webdriver.Chrome(chrome_drive_path, chrome_options=options)
-        self.driver = webdriver.Chrome(chrome_drive_path)
+        # self.driver = webdriver.Chrome(chrome_drive_path)
+        # self.driver.implicitly_wait(timeout)
+        # try:
+        #     self.driver.set_window_size(1920, 1080)
+        # except common.exceptions.WebDriverException:
+        #     logger.error(log_template, '出错', '无法调整窗口大小', '忽略此步骤')
+        # self.driver.get(entrance_url)
+        # self.get_login_ver_code()
+
+    def quit(self):
+        self.driver.quit()
+
+    def init(self):
+        self.driver = webdriver.Chrome(chrome_drive_path, chrome_options=self.options)
         self.driver.implicitly_wait(timeout)
         try:
             self.driver.set_window_size(1920, 1080)
         except common.exceptions.WebDriverException:
             logger.error(log_template, '出错', '无法调整窗口大小', '忽略此步骤')
-        self.driver.get(entrance_url)
-        # self.get_login_ver_code()
-
-    def quit(self):
-        self.driver.quit()
+        while True:
+            self.driver.get(entrance_url)
+            # print(self.driver.title)
+            if '用户登录' not in self.driver.title:
+                continue
+            else:
+                break
+        
 
     def login(self, student_num, password, code):
         try:

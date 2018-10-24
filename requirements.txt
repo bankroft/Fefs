@@ -2,9 +2,6 @@ logzero
 demjson
 requests
 wxpy
-imagehash
 pillow
 selenium
 pathlib
-flask
-flask_restful
