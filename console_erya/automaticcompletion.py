@@ -1,7 +1,6 @@
 # coding:utf-8
 import time
 import os
-import imagehash
 import re
 import threading
 from .log import *
