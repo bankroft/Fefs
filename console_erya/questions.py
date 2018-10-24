@@ -4,6 +4,11 @@ import demjson
 import requests
 from hashlib import md5
 from .config import questions_request_update, questions_request_query, wechat_mp
+try:
+    from .third_party_api import query as tpaq
+    tpa = True
+except ImportError:
+    tpa = False
 
 
 def wechat_search(title):
@@ -73,6 +78,12 @@ def query_http_server(op, **kwargs):
                         return re.split(r, i['data'])
             except:
                 pass
+            if tpa:
+                res = tpaq(kwargs['title'], kwargs['test_type'])
+                if res[0]:
+                    return res[1]
+                else:
+                    pass
             if not sure:
                 tmp = wechat_search(kwargs['title'])
                 if tmp:

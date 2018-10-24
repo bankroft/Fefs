@@ -102,7 +102,6 @@ class Main:
             self.autolearn()
         elif i == 2:
             # 考试
-            self.console.init()
             self.exam()
         else:
             self.setting()
@@ -132,11 +131,11 @@ class Main:
         rschool = self.console.search_school(school)
         # i = {str(key+1)+':': value for key, value in enumerate(rschool)}
         # i[''] = '请选择学校'
-        self.ui.pretty_table(['编号', '学校'], [[key+1, value] for key, value in enumerate(rschool)])
         if self.auto_login:
             sschool = self.account['sschool']
         else:
             # self.ui.ex_info(i)
+            self.ui.pretty_table(['编号', '学校'], [[key+1, value] for key, value in enumerate(rschool)])
             sschool = self.input_select('请选择学校', 1, len(rschool)) - 1
             self.account['sschool'] = sschool
         if self.console.select_school(sschool):
@@ -173,10 +172,9 @@ class Main:
 
     def exam(self):
         t = console.Exam()
-        print('请调整到考试页面，关闭其他所有页面')
-        t.start()
         while True:
-            re = input('如果需要考下一门，请等待本次考试结束，调整到下一门考试页面关闭其他页面(Y/N): ').upper()
+            print('请调整到考试页面，关闭其他所有页面')
+            re = input('是否开始?(Y/N): ').upper()
             if re == 'Y':
                 t.start()
             elif re == 'N':
@@ -190,9 +188,10 @@ class Main:
         while True:
             try:
                 slp = int(input('章节测验存在未查到答案试题的等待提交时间(分钟)'))
+                break
             except(ValueError, TypeError):
                 continue
-        conf.set('User', 'noanswer_sleep', slp)
+        conf.set('User', 'noanswer_sleep', str(slp))
         inl = input('默认线路无法播放时切换到：')
         conf.set('User', 'internet_line', inl)
         with open(str(Path(os.getcwd()) / 'config.ini'), 'w', encoding='utf-8') as f:

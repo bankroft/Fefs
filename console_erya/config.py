@@ -1,7 +1,7 @@
 # coding:utf-8
 import configparser
 from pathlib import Path
-from os import getcwd
+from os import getcwd, listdir, mkdir
 # from pymongo import MongoClient, errors
 # from console_erya.questions import query_http_server
 
@@ -74,6 +74,8 @@ screen_png = str(Path(getcwd()) / 'temp' /'test.png')
 
 # temp文件夹
 folder_temp_path = str(Path(getcwd()) / 'temp')
+if 'temp' not in listdir(str(Path(getcwd()))):
+    mkdir(folder_temp_path)
 
 # 截图tmp
 screen_png_tmp = str(Path(getcwd()) / 'temp' / 'tmp.png')
