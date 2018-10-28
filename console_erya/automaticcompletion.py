@@ -50,6 +50,7 @@ class AutomaticCompletion(threading.Thread):
                     if last_lesson == now_lesson:
                         if retry == 0:
                             logger.error(log_template, '出错', '无法检测视频(【{0}】)状态,请关闭程序手动观看该节课程'.format(last_lesson), '重试')
+                            return False
                         else:
                             retry -= 1
                         if refresh_tag:
@@ -57,6 +58,7 @@ class AutomaticCompletion(threading.Thread):
                         else:
                             self.driver.refresh()
                             refresh_tag = 1
+                            retry += 1
                             continue
                     else:
                         retry = 3

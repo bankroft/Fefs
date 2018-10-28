@@ -12,6 +12,9 @@ conf.read(str(Path(getcwd()) / 'config.ini'), encoding='utf-8')
 # ip = conf.get('Server', 'ip')
 # port = conf.getint('Server', 'port')
 
+# 题库token
+token = conf.get('User', 'token')
+
 # chrome 驱动
 chrome_drive_path = str(Path(getcwd()) / 'chromedriver.exe') if not conf.get('chromedriver', 'path', fallback=False) else conf.get('chromedriver', 'path', fallback=False)
 
@@ -20,6 +23,9 @@ auth_code_path = str(Path(getcwd()) / 'temp')
 
 # http请求地址(查询)
 questions_request_query = conf.get('queryHTTP', 'url_query', fallback=False)
+
+# http请求地址(查询/token)
+questions_request_query_token = conf.get('queryHTTP', 'url_query_token', fallback=False)
 
 # http请求地址(更新)
 questions_request_update = conf.get('queryHTTP', 'url_update', fallback=False)

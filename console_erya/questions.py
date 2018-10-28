@@ -3,12 +3,7 @@ import re
 import demjson
 import requests
 from hashlib import md5
-from .config import questions_request_update, questions_request_query, wechat_mp
-try:
-    from .third_party_api import query as tpaq
-    tpa = True
-except ImportError:
-    tpa = False
+from .config import questions_request_update, questions_request_query, wechat_mp, token, questions_request_query_token
 
 
 def wechat_search(title):
@@ -60,29 +55,40 @@ def query_http_server(op, **kwargs):
             if tmp['code'] == 100:
                 return True
         elif op == 'query':
-            md = md5()
-            md.update((kwargs['title'] + string_enc).encode())
-            sure = False
-            try:
-                i = demjson.decode(requests.get(questions_request_query, params={'title': kwargs['title'], 'enc': md.hexdigest()}).text, encoding='utf-8')
-                if i['code'] == 100:
-                    sure = True
-                    if kwargs['test_type'] == '判断题':
-                        if isinstance(i['data'], list):
-                            i['data'] = i['data'][0]
-                        if i['data'].lower() in ['√', '正确', 'true']:
-                            return True
+            if token:
+                try:
+                    i = demjson.decode(requests.get(questions_request_query_token, params={'title': kwargs['title'], 'token': token}).text, encoding='utf-8')
+                    if i['code'] == 100:
+                        sure = True
+                        if kwargs['test_type'] == '判断题':
+                            if isinstance(i['data'], list):
+                                i['data'] = i['data'][0]
+                            if i['data'].lower() in ['√', '正确', 'true']:
+                                return True
+                            else:
+                                return False
                         else:
-                            return False
-                    else:
-                        return re.split(r, i['data'])
-            except:
-                pass
-            if tpa:
-                res = tpaq(kwargs['title'], kwargs['test_type'])
-                if res[0]:
-                    return res[1]
-                else:
+                            return re.split(r, i['data'])
+                except:
+                    pass
+            else:
+                md = md5()
+                md.update((kwargs['title'] + string_enc).encode())
+                sure = False
+                try:
+                    i = demjson.decode(requests.get(questions_request_query, params={'title': kwargs['title'], 'enc': md.hexdigest()}).text, encoding='utf-8')
+                    if i['code'] == 100:
+                        sure = True
+                        if kwargs['test_type'] == '判断题':
+                            if isinstance(i['data'], list):
+                                i['data'] = i['data'][0]
+                            if i['data'].lower() in ['√', '正确', 'true']:
+                                return True
+                            else:
+                                return False
+                        else:
+                            return re.split(r, i['data'])
+                except:
                     pass
             if not sure:
                 tmp = wechat_search(kwargs['title'])

@@ -210,6 +210,8 @@ class Main:
         conf.set('User', 'noanswer_sleep', str(slp))
         inl = input('默认线路无法播放时切换到：')
         conf.set('User', 'internet_line', inl)
+        token = input('题库token: ')
+        conf.set('User', 'token', token)
         with open(str(Path(os.getcwd()) / 'config.ini'), 'w', encoding='utf-8') as f:
             conf.write(f)
 
