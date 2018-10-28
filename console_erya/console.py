@@ -2,7 +2,7 @@
 import time
 from PIL import Image
 from selenium import webdriver, common
-
+# import matplotlib.pyplot as plt
 from console_erya.log import *
 from console_erya.questions import query_http_server
 from .config import *
@@ -25,7 +25,7 @@ class Console:
     __course_lesson = []
 
     def __init__(self):
-        pass
+        # pass
         # prefs = {
         #     "profile.default_content_setting_values.plugins": 1,
         #     "profile.content_settings.plugin_whitelist.adobe-flash-player": 1,
@@ -33,9 +33,14 @@ class Console:
         #     "PluginsAllowedForUrls": "https://chaoxing.com"
         # }
         self.options = webdriver.ChromeOptions()
-        self.options.add_argument('log-level=3')
-        # options.add_argument('--headless')
-        # options.add_argument('--disable-gpu')
+        self.options.add_argument('--disable-extensions')
+        self.options.add_argument('--log-level=3')
+        self.options.add_argument('--slient')
+        self.options.add_argument('--disable-logging')
+        self.options.add_argument('--mute-audio')
+        self.options.add_argument('--headless')
+        self.options.add_argument('--disable-gpu')
+        self.options.add_argument('--window-size=1920,1080')
         # options.add_experimental_option("prefs", prefs)
         # self.driver = webdriver.Chrome(chrome_drive_path, chrome_options=options)
         # self.driver = webdriver.Chrome(chrome_drive_path)
@@ -53,10 +58,10 @@ class Console:
     def init(self):
         self.driver = webdriver.Chrome(chrome_drive_path, chrome_options=self.options)
         self.driver.implicitly_wait(timeout)
-        try:
-            self.driver.set_window_size(1920, 1080)
-        except common.exceptions.WebDriverException:
-            logger.error(log_template, '出错', '无法调整窗口大小', '忽略此步骤')
+        # try:
+        #     self.driver.set_window_size(1920, 1080)
+        # except common.exceptions.WebDriverException:
+        #     logger.error(log_template, '出错', '无法调整窗口大小', '忽略此步骤')
         while True:
             self.driver.get(entrance_url)
             # print(self.driver.title)
@@ -116,7 +121,7 @@ class Console:
         self.status['select_school'] = 1
         return True
 
-    def get_login_ver_code(self, refresh=False):
+    def get_login_ver_code(self, refresh=False, display=False):
         """
         获取验证码图片，保存为code.png
         :param refresh: 是否刷新
@@ -135,8 +140,19 @@ class Console:
         im = Image.open('code.png')
         im = im.crop((l, t, r, b))
         path_ = os.path.join(auth_code_path, filename)
-        im.save(path_)
-        return path_
+        if display:
+            # plt.figure("验证码")
+            # plt.imshow(im)
+            # plt.show()
+            im.show()
+            try:
+                os.remove(path_)
+            except FileNotFoundError:
+                pass
+            return True
+        else:
+            im.save(path_)
+            return path_
         # result = self.__base64_png+b64encode(open(os.path.join(path_vercode, filename), 'rb').read()).decode()
         # try:
         #     os.remove('code.png')

@@ -10,6 +10,8 @@ import time
 from pathlib import Path
 from prettytable import PrettyTable
 import configparser
+import webbrowser
+import requests
 
 
 info = {
@@ -22,7 +24,8 @@ function = {
     '': '请选择一项功能',
     '1: ': '刷课',
     '2: ': '考试',
-    '3: ': '设置'
+    '3: ': '设置',
+    '4: ': '联系作者',
 }
 
 
@@ -94,8 +97,9 @@ class Main:
     
     def start(self):
         self.ui.ex_info(info)
+        # self.check_version()
         self.ui.ex_info(function)
-        i = self.input_select('请输入选项数字', 1, 3)
+        i = self.input_select('请输入选项数字', 1, 4)
         if i == 1:
             # 刷课
             self.console.init()
@@ -103,8 +107,16 @@ class Main:
         elif i == 2:
             # 考试
             self.exam()
-        else:
+        elif i == 3:
+            # 设置
             self.setting()
+        elif i == 4:
+            # 关于
+            print('E-mail: bankroftvayne@gmail.com')
+            print('Blog: https://www.bankroft.cn')
+            webbrowser.open('https://www.bankroft.cn')
+        else:
+            print('输入错误')
 
     def autolearn(self):
         self.login()
@@ -145,6 +157,7 @@ class Main:
             import sys
             sys.exit(0)
         pwd_error = False
+        code_error = False
         if self.auto_login:
             num = self.account['num']
             pwd = self.account['pwd']
@@ -157,6 +170,7 @@ class Main:
             if pwd_error:
                 pwd = input('输入密码：').strip()
                 self.account['pwd'] = pwd
+            self.console.get_login_ver_code(refresh=code_error, display=True)
             code = input('输入验证码：').strip()
             print('登录中...')
             r = self.console.login(num, pwd, code)
@@ -167,6 +181,8 @@ class Main:
             else:
                 if '密码错误' == r[0]:
                     pwd_error = True
+                elif '验证码错误' == r[0]:
+                    code_error = True
                 print('登 录 失 败 :'+r[0])
 
 
@@ -196,6 +212,22 @@ class Main:
         conf.set('User', 'internet_line', inl)
         with open(str(Path(os.getcwd()) / 'config.ini'), 'w', encoding='utf-8') as f:
             conf.write(f)
+
+    @staticmethod
+    def check_version():
+        try:
+            res = requests.get('https://raw.githubusercontent.com/bankroft/Fefs/master/__version__.py').text.split('\n')
+        except:
+            print('无法检测新版本，如果无法观看请手动检查')
+            return False
+        new_version = ''
+        for x in res:
+            if '__version__' in x:
+                new_version = x.split('=')[1].strip().strip('\'')
+                break
+        if __version__.__version__ != new_version:
+            print('检测到新版本: ', new_version)
+    
 
     
 if __name__ == '__main__':

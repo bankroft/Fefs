@@ -30,26 +30,52 @@ class AutomaticCompletion(threading.Thread):
 
     def run(self):
         last_lesson = None
+        retry = 3
+        refresh_tag = 0
+        # self.headless_debug()
         for x in not_completed_lesson['string']:
             while True:
                 try:
                     self.driver.switch_to.default_content()
+                    # self.driver.get_screenshot_as_file('t.png')
                     # self.driver.find_element('xpath', x).click()
-                    ActionChains(self.driver).click(self.driver.find_element(not_completed_lesson['type'], x)).perform()
+                    les = self.driver.find_element(not_completed_lesson['type'], x)
+                    ActionChains(self.driver).click(les).perform()
                     time.sleep(5)
-                    if last_lesson == self.driver.find_element(lesson_name['type'], lesson_name['string']).text:
-                        logger.error(log_template, '出错', '无法检测视频状态，手动观看【{0}】,输入y确认已完成观看'.format(last_lesson), '结束刷课')
-                        while True:
-                            if input('是否已手动观看完成？(y)').strip() == 'y':
-                                break
+                    now_lesson = self.driver.find_element(lesson_name['type'], lesson_name['string']).text
+                    logger.info(log_template, '开始观看', now_lesson, '开始')
+                    # with open('test.html', 'w') as f:
+                    #     f.write(self.driver.page_source)
+                    # break
+                    if last_lesson == now_lesson:
+                        if retry == 0:
+                            logger.error(log_template, '出错', '无法检测视频(【{0}】)状态,请关闭程序手动观看该节课程'.format(last_lesson), '重试')
+                        else:
+                            retry -= 1
+                        if refresh_tag:
+                            refresh_tag = 0
+                        else:
+                            self.driver.refresh()
+                            refresh_tag = 1
+                            continue
+                    else:
+                        retry = 3
                     last_lesson = self.driver.find_element('xpath', '//div[@id="mainid"]/h1').text
                     if self.__watch():
                         last_lesson = None
+                        logger.info(log_template, '完成视频', now_lesson, '完成')
+                    else:
+                        continue
+                    logger.info(log_template, '开始答题', now_lesson, '开始')
                     self.__answer()
+                    logger.info(log_template, '完成答题', now_lesson, '完成')
+                    logger.info(log_template, '开始更新数据库', now_lesson, '开始')
                     self.__update_db()
+                    logger.info(log_template, '完成更新数据库', now_lesson, '完成')
                     time.sleep(10)
                 except common.exceptions.NoSuchElementException:
                     break
+        logger.info(log_template, '课程结束', '没记录课程名字', '完成')
         # for x in self.course_lesson:
         #     logger.info(log_template, 'Watch', x['name'], 'Start')
         #     self.__watch(x['link'])
@@ -241,6 +267,8 @@ class AutomaticCompletion(threading.Thread):
             self.driver.find_element(learn_page_test_button['type'], learn_page_test_button['string']).click()
         except common.exceptions.NoSuchElementException:
             return True
+        except common.exceptions.StaleElementReferenceException:
+            return False
         start_time = time.time()
         while True:
             if time.time() - start_time > 20:
@@ -407,6 +435,16 @@ class AutomaticCompletion(threading.Thread):
             os.remove('tmp.png')
         except (FileNotFoundError, PermissionError):
             pass
+
+    def headless_debug(self):
+        t = threading.Thread(self.headless_screenshot)
+        t.start()
+
+    def headless_screenshot(self):
+        tag = 0
+        while True:
+            self.driver.get_screenshot_as_file(str(tag)+'.png')
+            time.sleep(5)
 
 
 #     def __watch_bak(self):

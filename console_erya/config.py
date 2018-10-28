@@ -476,5 +476,5 @@ lesson_name = {
 # 学习页面未完成课程
 not_completed_lesson = {
     'type': 'xpath',
-    'string': ['//div[@class="ncells"]/a//span[@class="roundpointStudent  orange01 a002"]', '//div[@class="ncells"]/a//span[@class="roundpoint  orange01"]']
+    'string': ['//div[@class="ncells"]/a//span[@class="roundpointStudent  orange01 a002"]/../..', '//div[@class="ncells"]/a//span[@class="roundpoint  orange01"]/../..']
 }
