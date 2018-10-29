@@ -164,6 +164,12 @@ class Console:
     def get_course(self):
         self.__course = []
         self.driver.switch_to.default_content()
+        try:
+            self.driver.find_element(lesson_index['type'], lesson_index['string']).click()
+        except common.exceptions.NoSuchElementException:
+            pass
+        except:
+            pass
         for x in course_name_list_frame:
             # driver.switch_to.frame(driver.find_elements_by_tag_name(x['name'])[x['index']])
             self.driver.switch_to.frame(self.driver.find_elements_by_tag_name(x['name'])[x['index']])

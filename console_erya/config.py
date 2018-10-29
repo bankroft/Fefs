@@ -484,3 +484,9 @@ not_completed_lesson = {
     'type': 'xpath',
     'string': ['//div[@class="ncells"]/a//span[@class="roundpointStudent  orange01 a002"]/../..', '//div[@class="ncells"]/a//span[@class="roundpoint  orange01"]/../..']
 }
+
+# 首页课程
+lesson_index = {
+    'type': 'id',
+    'string': 'zne_kc_icon'
+}
