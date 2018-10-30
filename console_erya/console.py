@@ -3,9 +3,9 @@ import time
 from PIL import Image
 from selenium import webdriver, common
 # import matplotlib.pyplot as plt
+from .config import *
 from console_erya.log import *
 from console_erya.questions import query_http_server
-from .config import *
 import os
 from .automaticcompletion import AutomaticCompletion
 from base64 import b64encode
@@ -127,32 +127,33 @@ class Console:
         :param refresh: 是否刷新
         :return:
         """
-        filename = 'vercode.png'
+        code_path = os.path.join(auth_code_path, 'code.png')
+        screen_shot = os.path.join(auth_code_path, 'screenshot.png')
         if refresh:
             self.driver.find_element(refresh_code['type'], refresh_code['string']).click()
             # self.operate(refresh_code['type'], refresh_code['string'], 'click')
-        self.driver.get_screenshot_as_file('code.png')  # 保存登陆界面截图
+        self.driver.get_screenshot_as_file(screen_shot)  # 保存登陆界面截图
         a = self.driver.find_element_by_id('numVerCode')  # 定位验证码
         l = a.location['x'] + 1
         t = a.location['y'] + 1
         r = a.location['x'] + a.size['width']
         b = a.location['y'] + a.size['height']
-        im = Image.open('code.png')
+        im = Image.open(screen_shot)
         im = im.crop((l, t, r, b))
-        path_ = os.path.join(auth_code_path, filename)
+        im.save(code_path)
         if display:
+            os.system(code_path)
+            # time.sleep(5)
             # plt.figure("验证码")
             # plt.imshow(im)
             # plt.show()
-            im.show()
-            try:
-                os.remove(path_)
-            except FileNotFoundError:
-                pass
-            return True
-        else:
-            im.save(path_)
-            return path_
+            # im.show()
+            # try:
+            #     os.remove(path_)
+            # except FileNotFoundError:
+            #     pass
+            # return True
+        return code_path
         # result = self.__base64_png+b64encode(open(os.path.join(path_vercode, filename), 'rb').read()).decode()
         # try:
         #     os.remove('code.png')

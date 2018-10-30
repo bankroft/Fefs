@@ -2,6 +2,7 @@
 import configparser
 from pathlib import Path
 from os import getcwd, listdir, mkdir
+from utils.utils import rk_bool
 # from pymongo import MongoClient, errors
 # from console_erya.questions import query_http_server
 
@@ -12,11 +13,17 @@ conf.read(str(Path(getcwd()) / 'config.ini'), encoding='utf-8')
 # ip = conf.get('Server', 'ip')
 # port = conf.getint('Server', 'port')
 
+# 打码平台
+use_rk_code = rk_bool
+
 # 题库token
 token = conf.get('User', 'token')
 
 # chrome 驱动
 chrome_drive_path = str(Path(getcwd()) / 'chromedriver.exe') if not conf.get('chromedriver', 'path', fallback=False) else conf.get('chromedriver', 'path', fallback=False)
+
+# log file path
+logfile_path = str(Path(getcwd()) / 'temp' / 'Fefs.log')
 
 # 验证码保存位置
 auth_code_path = str(Path(getcwd()) / 'temp')

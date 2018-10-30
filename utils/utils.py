@@ -1,15 +1,15 @@
 # coding:utf-8
 import requests
 from hashlib import md5
+from .config import rk_username, rk_password
 
-
-tmp = open('./raccount.txt', 'r').read()
-username = tmp.split('|')[0].strip()
-passwd = md5(tmp.split('|')[1].strip().encode()).hexdigest()
+rk_bool = False
+if rk_username and rk_password:
+    rk_bool = True
 
 rk_post_data = {
-    'username': username,
-    'password': passwd,
+    'username': rk_username,
+    'password': rk_password,
     'typeid': 3040,
     'timeout': 60,
     'softid': '107227',
@@ -22,7 +22,7 @@ def rk_code(file_name):
     files = {'image': ('test.jpg', open(file_name, 'rb').read())}
     res = requests.post(rk_url, rk_post_data, files=files).json()
     if 'Error_Code' in res.keys():
-        return False
+        return 'False'
     return res['Result']
 
 

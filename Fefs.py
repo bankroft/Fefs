@@ -2,6 +2,8 @@
 import __version__
 from console_erya import log
 from console_erya import console
+from console_erya.config import use_rk_code
+from utils.utils import rk_code
 import os
 import json
 import base64
@@ -170,8 +172,11 @@ class Main:
             if pwd_error:
                 pwd = input('输入密码：').strip()
                 self.account['pwd'] = pwd
-            self.console.get_login_ver_code(refresh=code_error, display=True)
-            code = input('输入验证码：').strip()
+            file_name = self.console.get_login_ver_code(refresh=code_error, display=not use_rk_code)
+            if use_rk_code:
+                code = rk_code(file_name)
+            else:
+                code = input('输入验证码：').strip()
             print('登录中...')
             r = self.console.login(num, pwd, code)
             if r[1]:
@@ -212,6 +217,10 @@ class Main:
         conf.set('User', 'internet_line', inl)
         token = input('题库token: ')
         conf.set('User', 'token', token)
+        rk_username = input('若快平台账号：')
+        conf.set('User', 'rk_username', rk_username.strip())
+        rk_pwd = input('若快平台密码：')
+        conf.set('User', 'rk_password', rk_pwd.strip())
         with open(str(Path(os.getcwd()) / 'config.ini'), 'w', encoding='utf-8') as f:
             conf.write(f)
 
