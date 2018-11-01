@@ -1,6 +1,6 @@
 # coding:utf-8
 import __version__
-from console_erya import log
+from console_erya.printinfo import print_info
 from console_erya import console
 from console_erya.config import use_rk_code
 from utils.utils import rk_code
@@ -65,12 +65,12 @@ class Main:
         self.read_account()
 
     def save_account(self):
-        with open('account', 'wb') as f:
+        with open('./temp/account.b4', 'wb') as f:
             f.write(base64.b64encode(json.dumps(self.account).encode()))
 
     def read_account(self):
         try:
-            with open('account', 'rb') as f:
+            with open('./temp/account.b4', 'rb') as f:
                 self.account = json.loads(base64.b64decode(f.read()).decode())
         except:
             pass
@@ -130,8 +130,12 @@ class Main:
         self.ui.pretty_table(['编号', '课程'], [[key+1, value] for key, value in enumerate(course)])
         self.console.browse_watch(self.input_select('请选择', 1, len(course)) - 1)
         print('开始...')
-        while True:
-            time.sleep(10)
+        try:
+            while True:
+                time.sleep(10)
+        except KeyboardInterrupt:
+            print('KeyboardInterrupt')
+            exit(0)
     
     def login(self):
         if self.account:
@@ -155,7 +159,7 @@ class Main:
         if self.console.select_school(sschool):
             pass
         else:
-            log.logger.error(log.log_template, '选择学校', '错误', '请重启重试')
+            print_info(['选择学校', '错误', '请重启重试'], 'warning', True)
             import sys
             sys.exit(0)
         pwd_error = False
@@ -175,6 +179,7 @@ class Main:
             file_name = self.console.get_login_ver_code(refresh=code_error, display=not use_rk_code)
             if use_rk_code:
                 code = rk_code(file_name)
+                print('登陆验证码为：', code)
             else:
                 code = input('输入验证码：').strip()
             print('登录中...')
@@ -188,7 +193,7 @@ class Main:
                     pwd_error = True
                 elif '验证码错误' == r[0]:
                     code_error = True
-                print('登 录 失 败 :'+r[0])
+                print('登 录 失 败:', r[0])
 
 
     def exam(self):

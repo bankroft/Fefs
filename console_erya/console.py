@@ -90,7 +90,7 @@ class Console:
             try:
                 result_text = self.driver.find_element(login_result['type'], login_result['string']).text
             except common.exceptions.NoSuchElementException:
-                return False, False
+                return 'False', False
             return str(result_text), False
         self.status['login'] = 1
         return str(name), True
@@ -127,8 +127,8 @@ class Console:
         :param refresh: 是否刷新
         :return:
         """
-        code_path = os.path.join(auth_code_path, 'code.png')
-        screen_shot = os.path.join(auth_code_path, 'screenshot.png')
+        code_path = os.path.join(temp_path, 'code.png')
+        screen_shot = os.path.join(temp_path, 'screenshot.png')
         if refresh:
             self.driver.find_element(refresh_code['type'], refresh_code['string']).click()
             # self.operate(refresh_code['type'], refresh_code['string'], 'click')
@@ -195,6 +195,7 @@ class Console:
         if (course_id > (len(self.__course) - 1)) or (course_id < 0):
             return False
         course = self.__course[course_id]
+        course_name = course.text
         course.click()
         time.sleep(5)
         for x in self.driver.window_handles:
@@ -202,7 +203,7 @@ class Console:
             if self.driver.title == course_page_title:
                 break
         self.driver.find_elements(first_lesson['type'], first_lesson['string'])[0].click()
-        time.sleep(5)
+        # time.sleep(5)
         # 是否已完成
         # complete_status = self.driver.find_elements(list_complete_status['type'], list_complete_status['string'])
         # # 课时链接、课时名称、完成状态
@@ -212,7 +213,7 @@ class Console:
         #     tmp = {'name': y.text.replace('\n', '').strip(), 'link': x.get_attribute('href')}
         #     self.__course_lesson.append(tmp)
         # self.driver.close()
-        AutomaticCompletion(driver=self.driver).start()
+        AutomaticCompletion(driver=self.driver, course_name=course_name).start()
         self.status['browser_watch'] = 1
         return True
 

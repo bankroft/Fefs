@@ -25,8 +25,8 @@ chrome_drive_path = str(Path(getcwd()) / 'chromedriver.exe') if not conf.get('ch
 # log file path
 logfile_path = str(Path(getcwd()) / 'temp' / 'Fefs.log')
 
-# 验证码保存位置
-auth_code_path = str(Path(getcwd()) / 'temp')
+# temp文件夹
+temp_path = str(Path(getcwd()) / 'temp')
 
 # http请求地址(查询)
 questions_request_query = conf.get('queryHTTP', 'url_query', fallback=False)
@@ -489,7 +489,11 @@ lesson_name = {
 # 学习页面未完成课程
 not_completed_lesson = {
     'type': 'xpath',
-    'string': ['//div[@class="ncells"]/a//span[@class="roundpointStudent  orange01 a002"]/../..', '//div[@class="ncells"]/a//span[@class="roundpoint  orange01"]/../..']
+    'string': [
+        '//div[@class="ncells"]/a//span[@class="roundpointStudent  orange01 a002"]/../..', 
+        '//div[@class="ncells"]/a//span[@class="roundpoint  orange01"]/../..',
+        '//div[@class="ncells"]/a//span[@class="roundpointStudent"]/../..',
+        ]
 }
 
 # 首页课程
