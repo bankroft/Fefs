@@ -119,7 +119,7 @@ def query_http_server(op, defalut=True, **kwargs):
                         return True, 100, True
                 else:
                     return True, 100, tmp, 'wechat_mp'
-            return False, 102, '未查到'
+            return False, 102, '未查到', ' '
         elif op == 'addtitle':
             md = md5()
             md.update((kwargs['title']+string_enc).encode())

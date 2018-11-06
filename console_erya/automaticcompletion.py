@@ -13,7 +13,7 @@ from random import randint
 import requests
 from random import choices
 from string import ascii_letters
-from .printinfo import print_info
+from .printinfo import print_info, print_progress
 
 
 headers = {
@@ -36,67 +36,108 @@ class AutomaticCompletion(threading.Thread):
         last_lesson = None
         retry = 3
         refresh_tag = 0
-        # self.headless_debug()
         while True:
-            complete_tag = len(not_completed_lesson['string'])
-            for x in not_completed_lesson['string']:
-                try:
-                    self.driver.refresh()
-                    self.driver.switch_to.default_content()
-                    # self.driver.get_screenshot_as_file('t.png')
-                    # self.driver.find_element('xpath', x).click()
-                    les = self.driver.find_element(not_completed_lesson['type'], x)
-                    ActionChains(self.driver).click(les).perform()
-                    time.sleep(5)
-                    now_lesson = self.driver.find_element(lesson_name['type'], lesson_name['string']).text
-                    print_info(['开始观看', now_lesson, '开始'], 'info', True)
-                    # logger.info(log_template, '开始观看', now_lesson, '开始')
-                    # with open('test.html', 'w') as f:
-                    #     f.write(self.driver.page_source)
-                    # break
-                    if last_lesson == now_lesson:
-                        if retry == 0:
-                            # logger.error(log_template, '出错', '无法检测视频(【{0}】)状态,请关闭程序手动观看该节课程'.format(last_lesson), '重试')
-                            print_info(['出错', '无法检测视频(【{0}】)状态,请关闭程序手动观看该节课程'.format(last_lesson), '重试'], 'verbose', True)
-                            return False
-                        else:
-                            # logger.warning(log_template, '出错', '视频(【{0}】)播放错误'.format(last_lesson), '重试')
-                            print_info(['出错', '视频(【{0}】)播放错误'.format(last_lesson), '重试'], 'warning', True)
-                            retry -= 1
-                        if refresh_tag:
-                            refresh_tag = 0
-                        else:
-                            self.driver.refresh()
-                            refresh_tag = 1
-                            retry += 1
-                            continue
+            try:
+                self.driver.refresh()
+                self.driver.switch_to.default_content()
+                les = self.driver.find_element(not_completed_lesson['type'], not_completed_lesson['string'])
+                ActionChains(self.driver).click(les).perform()
+                time.sleep(5)
+                now_lesson = self.driver.find_element(lesson_name['type'], lesson_name['string']).text
+                if last_lesson == now_lesson:
+                    if retry == 0:
+                        print_info(['出错', '无法检测视频(【{0}】)状态,请关闭程序手动观看该节课程'.format(last_lesson), '重试'], 'verbose', True, all_output=True)
+                        return False
                     else:
-                        retry = 3
-                    last_lesson = self.driver.find_element('xpath', '//div[@id="mainid"]/h1').text
-                    if self.__watch():
-                        last_lesson = None
-                        print_info(['视频', now_lesson, '完成'], 'info', True)
-                        # logger.info(log_template, '完成视频', now_lesson, '完成')
+                        print_info(['出错', '视频(【{0}】)播放错误'.format(last_lesson), '重试'], 'warning', True, all_output=True)
+                        retry -= 1
+                    if refresh_tag:
+                        refresh_tag = 0
                     else:
+                        print_info(['刷新页面', '视频(【{0}】)'.format(last_lesson), '刷新'], 'warning', True, all_output=True)
+                        self.driver.refresh()
+                        refresh_tag = 1
+                        retry += 1
                         continue
-                    # logger.info(log_template, '开始答题', now_lesson, '开始')
-                    print_info(['答题', now_lesson, '开始'], 'info', True)
-                    self.__answer()
-                    print_info(['答题', now_lesson, '完成'], 'info', True)
-                    # logger.info(log_template, '完成答题', now_lesson, '完成')
-                    # logger.info(log_template, '开始更新数据库', now_lesson, '开始')
-                    print_info(['更新题库', now_lesson, '开始'], 'info', True)
-                    self.__update_db()
-                    # logger.info(log_template, '完成更新数据库', now_lesson, '完成')
-                    print_info(['更新题库', now_lesson, '完成'], 'info', True)
-                    self.driver.get_screenshot_as_file(os.path.join(temp_path, ''.join(choices(ascii_letters, k=8))+'.png'))
-                    # time.sleep(10)
-                except common.exceptions.NoSuchElementException:
-                    complete_tag -= 1
+                else:
+                    retry = 3
+                last_lesson = self.driver.find_element('xpath', '//div[@id="mainid"]/h1').text
+                print_info(['开始观看', now_lesson, '开始'], 'info', True)
+                if self.__watch():
+                    last_lesson = None
+                    print_info(['视频', now_lesson, '完成'], 'info', True)
+                    # logger.info(log_template, '完成视频', now_lesson, '完成')
+                else:
                     continue
-            if complete_tag == 0:
+                print_info(['章节测验', now_lesson, '开始'], 'info', True)
+                self.__answer()
+                print_info(['章节测验', now_lesson, '完成'], 'info', True)
+                print_info(['更新正确题目', now_lesson, '开始'], 'info', True)
+                self.__update_db()
+                print_info(['更新正确题目', now_lesson, '完成'], 'info', True)
+                self.driver.get_screenshot_as_file(os.path.join(temp_path, ''.join(choices(ascii_letters, k=8))+'.png'))
+                # time.sleep(10)
+            except common.exceptions.NoSuchElementException:
                 break
-        print_info(log_template.format('课程', self.course_name if self.course_name else '没记录课程名字', '完成'), 'info', True)
+        # self.headless_debug()
+        # while True:
+        #     complete_tag = len(not_completed_lesson['string'])
+        #     for x in not_completed_lesson['string']:
+        #         try:
+        #             self.driver.refresh()
+        #             self.driver.switch_to.default_content()
+        #             # self.driver.get_screenshot_as_file('t.png')
+        #             # self.driver.find_element('xpath', x).click()
+        #             les = self.driver.find_element(not_completed_lesson['type'], x)
+        #             ActionChains(self.driver).click(les).perform()
+        #             time.sleep(5)
+        #             now_lesson = self.driver.find_element(lesson_name['type'], lesson_name['string']).text
+        #             print_info(['开始观看', now_lesson, '开始'], 'info', True)
+        #             # logger.info(log_template, '开始观看', now_lesson, '开始')
+        #             if last_lesson == now_lesson:
+        #                 if retry == 0:
+        #                     # logger.error(log_template, '出错', '无法检测视频(【{0}】)状态,请关闭程序手动观看该节课程'.format(last_lesson), '重试')
+        #                     print_info(['出错', '无法检测视频(【{0}】)状态,请关闭程序手动观看该节课程'.format(last_lesson), '重试'], 'verbose', True, all_output=True)
+        #                     return False
+        #                 else:
+        #                     # logger.warning(log_template, '出错', '视频(【{0}】)播放错误'.format(last_lesson), '重试')
+        #                     print_info(['出错', '视频(【{0}】)播放错误'.format(last_lesson), '重试'], 'warning', True, all_output=True)
+        #                     retry -= 1
+        #                 if refresh_tag:
+        #                     refresh_tag = 0
+        #                 else:
+        #                     print_info(['刷新页面', '视频(【{0}】)'.format(last_lesson), '刷新'], 'warning', True, all_output=True)
+        #                     self.driver.refresh()
+        #                     refresh_tag = 1
+        #                     retry += 1
+        #                     continue
+        #             else:
+        #                 retry = 3
+        #             last_lesson = self.driver.find_element('xpath', '//div[@id="mainid"]/h1').text
+        #             if self.__watch():
+        #                 last_lesson = None
+        #                 print_info(['视频', now_lesson, '完成'], 'info', True)
+        #                 # logger.info(log_template, '完成视频', now_lesson, '完成')
+        #             else:
+        #                 continue
+        #             # logger.info(log_template, '开始答题', now_lesson, '开始')
+        #             print_info(['答题', now_lesson, '开始'], 'info', True)
+        #             self.__answer()
+        #             print_info(['答题', now_lesson, '完成'], 'info', True)
+        #             # logger.info(log_template, '完成答题', now_lesson, '完成')
+        #             # logger.info(log_template, '开始更新数据库', now_lesson, '开始')
+        #             print_info(['更新题库', now_lesson, '开始'], 'info', True)
+        #             self.__update_db()
+        #             # logger.info(log_template, '完成更新数据库', now_lesson, '完成')
+        #             print_info(['更新题库', now_lesson, '完成'], 'info', True)
+        #             self.driver.get_screenshot_as_file(os.path.join(temp_path, ''.join(choices(ascii_letters, k=8))+'.png'))
+        #             # time.sleep(10)
+        #         except common.exceptions.NoSuchElementException:
+        #             complete_tag -= 1
+        #             continue
+        #     if complete_tag == 0:
+        #         break
+        print_info(['课程', self.course_name if self.course_name else '没记录课程名字', '完成'], 'info', True)
         # logger.info(log_template, '课程结束', self.course_name if self.course_name else '没记录课程名字', '完成')
         # for x in self.course_lesson:
         #     logger.info(log_template, 'Watch', x['name'], 'Start')
@@ -136,16 +177,26 @@ class AutomaticCompletion(threading.Thread):
         # self.switch_to_video_frame()
         self.__screenshot_video(os.path.join(folder_temp_path, str(0) + '.png'))
         time.sleep(5)
+        # 秒
+        progress = -1
         self.__screenshot_video(os.path.join(folder_temp_path, str(1) + '.png'))
         if open(os.path.join(folder_temp_path, str(0) + '.png'), 'rb').read() != open(os.path.join(folder_temp_path, str(1) + '.png'), 'rb').read():
-            pass
+            self.switch_to_video_frame()
+            try:
+                a = int(float(self.driver.find_element_by_id('video_html5_api').get_attribute('duration')))
+                b = int(float(self.driver.find_element_by_id('video_html5_api').get_attribute('currentTime')))
+                progress = b, a
+            except common.exceptions.NoSuchElementException:
+                pass
+            except (TypeError, ValueError):
+                pass
         # if imagehash.average_hash(Image.open(os.path.join(folder_temp_path, str(0) + '.png'))) - imagehash.average_hash(Image.open(os.path.join(folder_temp_path, str(1) + '.png'))) != 0:
         #     pass
         # elif Image.open(os.path.join(folder_temp_path, str(0) + '.png')).crop(video_progress_bar1).tobytes() != Image.open(os.path.join(folder_temp_path, str(1) + '.png')).crop(video_progress_bar1).tobytes():
         #     pass
         else:
             return False, 'not play'
-        return True, 'playing'
+        return True, progress
 
     def answer_video(self, qt=None):
         """
@@ -202,20 +253,24 @@ class AutomaticCompletion(threading.Thread):
         # logger.info(log_template, '视频答题', res[0]['datas'][0]['description'], '回答完成')
 
     def click_video(self):
-        self.driver.switch_to.default_content()
         self.switch_to_video_frame()
         self.driver.find_element_by_id('video').click()
 
     def video_complete_status(self):
+        self.driver.switch_to.default_content()
+        for x in learn_page_video_part_iframe:
+            # driver.switch_to.frame(driver.find_elements_by_tag_name(x['name'])[x['index']])
+            self.driver.switch_to.frame(self.driver.find_elements_by_tag_name(x['name'])[x['index']])
         try:
-            self.driver.switch_to.default_content()
-            for x in learn_page_video_part_iframe:
-                # driver.switch_to.frame(driver.find_elements_by_tag_name(x['name'])[x['index']])
-                self.driver.switch_to.frame(self.driver.find_elements_by_tag_name(x['name'])[x['index']])
             self.driver.find_element(video_complete_status['type'], video_complete_status['string'])
             return True
         except common.exceptions.NoSuchElementException:
+            pass
+        try:
+            self.driver.find_element(video_not_complete_status['type'], video_not_complete_status['string'])
             return False
+        except common.exceptions.NoSuchElementException:
+            return True
 
     def __watch(self):
         self.driver.switch_to.default_content()
@@ -228,15 +283,22 @@ class AutomaticCompletion(threading.Thread):
         # ct: 改变线路，a: 回答,s: 点击开始
         last_opt = None
         self.switch_to_video_frame()
-        self.driver.find_element_by_xpath('//*[@id="video"]/button').click()
+        self.click_video()
+        print_info(['点击视频', '启动', '完成'], 'info', True)
+        # self.driver.find_element_by_xpath('//*[@id="video"]/button').click()
         # time.sleep(1)
         while True:
             # 该视频是否完成
             if self.video_complete_status():
                 break
             self.switch_to_video_frame()
-            if self.play_status()[0]:
+            a = self.play_status()
+            if a[0]:
                 # print(1)
+                if a[1] != -1:
+                    b = str(a[1][0]) + '/' + str(a[1][1])+'s'
+                    p = str(int((a[1][0] / a[1][1])*100))
+                    print_progress('滴 - 当前进度:{0} - {1}%'.format(b, p))
                 last_opt = None
             else:
                 try:
@@ -408,7 +470,13 @@ class AutomaticCompletion(threading.Thread):
             if self.driver.find_element(submit_test_confirm['type'], submit_test_confirm['string']).text != '确定':
                 time.sleep(2)
             else:
-                break
+                tmp = self.driver.find_element_by_id(submit_test_validate['type'], submit_test_validate['string'])
+                if tmp.is_displayed():
+                    os.system(self.__screenshot_sbt_validate())
+                    code = input('验证码:').strip()
+                    self.driver.find_element(submit_test_code_input['type'], submit_test_code_input['string']).clear()
+                    self.driver.find_element(submit_test_code_input['type'], submit_test_code_input['string']).send_keys(code)
+                    self.driver.find_element(submit_test_code_button['type'], submit_test_code_button['string']).click()
         self.driver.find_element(submit_test_confirm['type'], submit_test_confirm['string']).click()
         print_info(['提交章节测试', '确认', '提交'], 'info', True)
         # logger.info(log_template, '提交章节测试', '确认', '提交')
@@ -501,6 +569,25 @@ class AutomaticCompletion(threading.Thread):
             os.remove('tmp.png')
         except (FileNotFoundError, PermissionError):
             pass
+
+    def __screenshot_sbt_validate(self, filename=os.path.join(folder_temp_path, 'sbtcode.png')):
+        self.driver.get_screenshot_as_file('tmp.png')
+        self.driver.switch_to.default_content()
+        tmp = self.driver.find_element(submit_test_imgcode['type'], submit_test_imgcode['string'])
+        i = Image.open('tmp.png')
+        i.crop(
+            (
+                tmp.location_once_scrolled_into_view['x'],
+                tmp.location_once_scrolled_into_view['y'],
+                tmp.location_once_scrolled_into_view['x'] + tmp.size['width'],
+                tmp.location_once_scrolled_into_view['y'] + tmp.size['height']
+            )
+        ).save(filename)
+        try:
+            os.remove('tmp.png')
+        except (FileNotFoundError, PermissionError):
+            pass
+        return filename
 
     def headless_debug(self):
         t = threading.Thread(self.headless_screenshot)

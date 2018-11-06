@@ -1,6 +1,6 @@
 # coding:utf-8
 
-__version__ = '1.2.5'
+__version__ = '1.2.7'
 __author__ = 'Bankroft'
 __blog__ = 'https://www.bankroft.cn'
 __mail__ = 'bankroftvayne@gmail.com'

@@ -29,13 +29,13 @@ logfile_path = str(Path(getcwd()) / 'temp' / 'Fefs.log')
 temp_path = str(Path(getcwd()) / 'temp')
 
 # http请求地址(查询)
-questions_request_query = conf.get('queryHTTP', 'url_query', fallback=False)
+questions_request_query = 'http://123.207.19.72/api/query' # conf.get('queryHTTP', 'url_query', fallback=False)
 
 # http请求地址(查询/token)
-questions_request_query_token = conf.get('queryHTTP', 'url_query_token', fallback=False)
+questions_request_query_token = 'http://123.207.19.72/api/token-query' # conf.get('queryHTTP', 'url_query_token', fallback=False)
 
 # http请求地址(更新)
-questions_request_update = conf.get('queryHTTP', 'url_update', fallback=False)
+questions_request_update = 'http://123.207.19.72/api/update' # conf.get('queryHTTP', 'url_update', fallback=False)
 
 # # 数据库地址
 # db_ip = conf.get('queryDatabase', 'ip', fallback=False)
@@ -93,47 +93,47 @@ if 'temp' not in listdir(str(Path(getcwd()))):
 # 截图tmp
 screen_png_tmp = str(Path(getcwd()) / 'temp' / 'tmp.png')
 
-# 图片模板
-templates_pic_path = str(Path(getcwd()) / 'templates_pic')
+# # 图片模板
+# templates_pic_path = str(Path(getcwd()) / 'templates_pic')
 
-# 视频中间测试提交1_1
-video_test_submit1_1 = str(Path(getcwd()) / 'templates_pic' / 'submit1_1.png')
+# # 视频中间测试提交1_1
+# video_test_submit1_1 = str(Path(getcwd()) / 'templates_pic' / 'submit1_1.png')
 
-# 视频中间测试提交2_1
-video_test_submit2_1 = str(Path(getcwd()) / 'templates_pic' / 'submit2_1.png')
+# # 视频中间测试提交2_1
+# video_test_submit2_1 = str(Path(getcwd()) / 'templates_pic' / 'submit2_1.png')
 
-# 视频中间测试提交3_1
-video_test_submit3_1 = str(Path(getcwd()) / 'templates_pic' / 'submit3_1.png')
+# # 视频中间测试提交3_1
+# video_test_submit3_1 = str(Path(getcwd()) / 'templates_pic' / 'submit3_1.png')
 
-# 视频中间测试提交1_4四个选项一行title
-video_test_submit1_4 = str(Path(getcwd()) / 'templates_pic' / 'submit1_4.png')
+# # 视频中间测试提交1_4四个选项一行title
+# video_test_submit1_4 = str(Path(getcwd()) / 'templates_pic' / 'submit1_4.png')
 
-# 视频中间测试提交1_3三个选项一行title
-video_test_submit1_3 = str(Path(getcwd()) / 'templates_pic' / 'submit1_3.png')
+# # 视频中间测试提交1_3三个选项一行title
+# video_test_submit1_3 = str(Path(getcwd()) / 'templates_pic' / 'submit1_3.png')
 
-# 视频暂停时开始按钮1(10, 515, 35, 535)
-video_pause_continue1 = str(Path(getcwd()) / 'templates_pic' / 'pause1.png')
+# # 视频暂停时开始按钮1(10, 515, 35, 535)
+# video_pause_continue1 = str(Path(getcwd()) / 'templates_pic' / 'pause1.png')
 
-# 视频进度条位置1
-video_progress_bar1 = (80, 513, 210, 537)
+# # 视频进度条位置1
+# video_progress_bar1 = (80, 513, 210, 537)
 
-# 视频暂停/继续按钮1
-location_video_pause_continue1 = (10, 515, 35, 535)
+# # 视频暂停/继续按钮1
+# location_video_pause_continue1 = (10, 515, 35, 535)
 
-# 视频内答题 提交 按钮位置1行1
-location_video_test_submit1_1 = (490, 250, 540, 275)
+# # 视频内答题 提交 按钮位置1行1
+# location_video_test_submit1_1 = (490, 250, 540, 275)
 
-# 视频内答题 提交 按钮位置2行1
-location_video_test_submit2_1 = (490, 285, 540, 310)
+# # 视频内答题 提交 按钮位置2行1
+# location_video_test_submit2_1 = (490, 285, 540, 310)
 
-# 视频内答题 提交 按钮位置3行1
-location_video_test_submit3_1 = (490, 305, 540, 330)
+# # 视频内答题 提交 按钮位置3行1
+# location_video_test_submit3_1 = (490, 305, 540, 330)
 
-# 视频内答题 提交 按钮位置一行四个选项
-location_video_test_submit1_4 = (490, 350, 540, 380)
+# # 视频内答题 提交 按钮位置一行四个选项
+# location_video_test_submit1_4 = (490, 350, 540, 380)
 
-# 视频内答题 提交 按钮位置一行三个选项
-location_video_test_submit1_3 = (490, 300, 540, 330)
+# # 视频内答题 提交 按钮位置一行三个选项
+# location_video_test_submit1_3 = (490, 300, 540, 330)
 
 # # 视频内答题提交成功后继续按钮位置1
 # location_video_continue1 = (940, 535, 990, 560)
@@ -334,14 +334,20 @@ learn_page_video_button = {
 # 学习页面章节测验按钮
 learn_page_test_button = {
     'type': 'xpath',
-    'string': '//span[contains(@title, "章节测验")]'
-    # 'string': '//span[starts-with(@title, "章节测验")]'
+    # 'string': ['//span[contains(@title, "章节测验")]', '//span[contains(@title, "作业")]']
+    'string': '//span[contains(@title, "章节测验")]|//span[contains(@title, "作业")]'
 }
 
 # 视频完成状态，如果xpath不报错则表示已完成
 video_complete_status = {
     'type': 'xpath',
     'string': '//div[@class="ans-attach-ct ans-job-finished"]'
+}
+
+# 任务未完成
+video_not_complete_status = {
+    'type': 'xpath',
+    'string': '//div[@class="ans-attach-ct"]/div[@class="ans-job-icon"]'
 }
 
 # 章节测验完成状态，如果xpath不报错则表示已完成
@@ -409,6 +415,30 @@ submit_test = {
 submit_test_confirm = {
     'type': 'xpath',
     'string': '//*[@id="confirmSubWin"]/div/div/a[1]'
+}
+
+# 章节测验确认后验证码区域
+submit_test_validate = {
+    'type': 'id',
+    'string': 'validate'
+}
+
+# 章节测验提交后验证码
+submit_test_imgcode = {
+    'type': 'id',
+    'string': 'imgVerCode'
+}
+
+# 章节测验提交验证码输入框
+submit_test_code_input = {
+    'type': 'id',
+    'string': 'code'
+}
+
+# 章节测验提交验证码按钮
+submit_test_code_button = {
+    'type': 'id',
+    'string': 'sub'
 }
 
 # 章节测试加载完成标志
@@ -489,11 +519,12 @@ lesson_name = {
 # 学习页面未完成课程
 not_completed_lesson = {
     'type': 'xpath',
-    'string': [
-        '//div[@class="ncells"]/a//span[@class="roundpointStudent  orange01 a002"]/../..', 
-        '//div[@class="ncells"]/a//span[@class="roundpoint  orange01"]/../..',
-        '//div[@class="ncells"]/a//span[@class="roundpointStudent"]/../..',
-        ]
+    # 'string': [
+    #     '//div[@class="ncells"]/a//span[@class="roundpointStudent  orange01 a002"]/../..', 
+    #     '//div[@class="ncells"]/a//span[@class="roundpoint  orange01"]/../..',
+    #     '//div[@class="ncells"]/a//span[@class="roundpointStudent"]/../..',
+    #     ]
+    'string': '//div[@class="ncells"]/a//span[@class="roundpointStudent  orange01 a002" or @class="roundpoint  orange01" or @class="roundpointStudent"]/../..'
 }
 
 # 首页课程

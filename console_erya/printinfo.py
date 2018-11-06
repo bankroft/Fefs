@@ -103,7 +103,15 @@ def print_yellow_red(mess):
 
 ##############################################################
 
+last_print = 1
+last_progress_len = 0
 def print_info(mes, level, timz=False, all_output=False):
+    global last_print
+    if last_print == 1:
+        pass
+    elif last_print == 2:
+        print_progress('', end='\r')
+    last_print = 1
     if not all_output:
         for i, v in enumerate(mes):
             if len(v) > 17:
@@ -127,6 +135,14 @@ def print_info(mes, level, timz=False, all_output=False):
         print_yellow_red(mes)
     else:
         print(mes)
+
+def print_progress(mes, end='\r'):
+    global last_print, last_progress_len
+    print_dark_green(' '*last_progress_len+end)
+    last_print = 2
+    print_dark_green(str(mes)+end)
+    last_progress_len = len(str(mes))
+
 
 if __name__ == '__main__':
     pass
