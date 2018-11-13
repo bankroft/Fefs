@@ -466,17 +466,18 @@ class AutomaticCompletion(threading.Thread):
         for x in test_submit_iframe:
             self.driver.switch_to.frame(self.driver.find_elements_by_tag_name(x['name'])[x['index']])
         self.driver.find_element(submit_test['type'], submit_test['string']).click()
+        time.sleep(2)
         while True:
             if self.driver.find_element(submit_test_confirm['type'], submit_test_confirm['string']).text != '确定':
-                time.sleep(2)
-            else:
-                tmp = self.driver.find_element_by_id(submit_test_validate['type'], submit_test_validate['string'])
+                tmp = self.driver.find_element(submit_test_validate['type'], submit_test_validate['string'])
                 if tmp.is_displayed():
                     os.system(self.__screenshot_sbt_validate())
                     code = input('验证码:').strip()
                     self.driver.find_element(submit_test_code_input['type'], submit_test_code_input['string']).clear()
                     self.driver.find_element(submit_test_code_input['type'], submit_test_code_input['string']).send_keys(code)
                     self.driver.find_element(submit_test_code_button['type'], submit_test_code_button['string']).click()
+            else:
+                break
         self.driver.find_element(submit_test_confirm['type'], submit_test_confirm['string']).click()
         print_info(['提交章节测试', '确认', '提交'], 'info', True)
         # logger.info(log_template, '提交章节测试', '确认', '提交')
@@ -556,13 +557,15 @@ class AutomaticCompletion(threading.Thread):
             self.driver.switch_to.frame(self.driver.find_elements_by_tag_name(x['name'])[x['index']])
         # tmp = self.driver.find_element_by_tag_name('object')
         tmp = self.driver.find_element_by_id('video_html5_api')
+        size = tmp.size
+        view = tmp.location_once_scrolled_into_view
         i = Image.open('tmp.png')
         i.crop(
             (
-                tmp.location_once_scrolled_into_view['x'],
-                tmp.location_once_scrolled_into_view['y'],
-                tmp.location_once_scrolled_into_view['x'] + tmp.size['width'],
-                tmp.location_once_scrolled_into_view['y'] + tmp.size['height']
+                view['x'],
+                view['y'],
+                view['x'] + size['width'],
+                view['y'] + size['height']
             )
         ).save(filename)
         try:

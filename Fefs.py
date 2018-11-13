@@ -62,7 +62,14 @@ class Main:
         self.console = console.Console()
         self.auto_login = False
         self.account = {}
+        self.function = {}
         self.read_account()
+        self.register_function(description='刷课', func=self.autolearn)
+        self.register_function(description='刷课(自动重登)', func=self.while_true_learn)
+        self.register_function(description='考试', func=self.exam)
+        self.register_function(description='设置', func=self.setting)
+        self.register_function(description='关于', func=self.about)
+        self.ui.ex_info(info)
 
     def save_account(self):
         with open('./temp/account.b4', 'wb') as f:
@@ -74,11 +81,14 @@ class Main:
                 self.account = json.loads(base64.b64decode(f.read()).decode())
         except:
             pass
+    
+    def register_function(self, **kwargs):
+        self.function[len(self.function.keys()) + 1] = {'desc': kwargs['description'], 'func': kwargs['func']}
 
     def input_select(self, hint, start, end):
         while True:
             try:
-                i = input(hint+'(按q退出): ').strip()
+                i = input(hint+'(按q or Ctrl-C退出): ').strip()
                 if i == 'q':
                     sys.exit(0)
                 i = int(i)
@@ -98,37 +108,67 @@ class Main:
                 return False
     
     def start(self):
-        self.ui.ex_info(info)
         # self.check_version()
-        self.ui.ex_info(function)
-        i = self.input_select('请输入选项数字', 1, 4)
-        if i == 1:
-            # 刷课
-            self.console.init()
-            self.autolearn()
-        elif i == 2:
-            # 考试
-            self.exam()
-        elif i == 3:
-            # 设置
-            self.setting()
-        elif i == 4:
-            # 关于
-            print('E-mail: bankroftvayne@gmail.com')
-            print('Blog: https://www.bankroft.cn')
-            webbrowser.open('https://www.bankroft.cn')
-        else:
-            print('输入错误')
+        self.ui.ex_info({k.__str__()+': ': v['desc'] for k, v in self.function.items()})
+        i = self.input_select('请输入选项数字', 1, len(self.function.keys()))
+        self.function[i]['func']()
+
+    def while_true_learn(self):
+        if set(['course', 'school', 'sschool', 'num', 'pwd']) - set(self.account.keys()):
+            print('信息不完整，请重新运行功能: 1')
+            return False
+        if not use_rk_code:
+            print('请运行功能：3，设置若快平台账号和密码')
+            return False
+        while True:
+            try:
+                self.console.init()
+                self.console.search_school(self.account['school'])
+                self.console.select_school(self.account['sschool'])
+                code_error = False
+                pwd_error = False
+                while True:
+                    if pwd_error:
+                        print('密码错误，请重新运行共能：1')
+                        return False
+                    file_name = self.console.get_login_ver_code(refresh=code_error, display=not use_rk_code)
+                    code = rk_code(file_name)
+                    print('登陆验证码为：', code)
+                    print('登录中...')
+                    r = self.console.login(self.account['num'], self.account['pwd'], code)
+                    if r[1]:
+                        print('登 录 成 功 :'+r[0])
+                        break
+                    else:
+                        if '密码错误' == r[0]:
+                            pwd_error = True
+                        elif '验证码错误' == r[0]:
+                            code_error = True
+                        print('登 录 失 败:', r[0])
+                course = self.console.get_course()
+                self.console.browse_watch(self.account['course'])
+                print_info(['课程', course[self.account['course']], '开始'], 'info', True)
+                while True:
+                    time.sleep(10)
+            except KeyboardInterrupt:
+                print('结束')
+                return False
+            except:
+                print('错误，重新开始')
+                continue
 
     def autolearn(self):
+        self.console.init()
         self.login()
-        self.save_account()
         course = self.console.get_course()
         # i = {str(key+1)+':': value for key, value in enumerate(course)}
         # i[''] = '请选择观看的课程'
         # self.ui.ex_info(i)
         self.ui.pretty_table(['编号', '课程'], [[key+1, value] for key, value in enumerate(course)])
-        self.console.browse_watch(self.input_select('请选择', 1, len(course)) - 1)
+        s = self.input_select('请选择', 1, len(course)) - 1
+        self.account['course'] = s
+        self.save_account()
+        self.console.browse_watch(s)
         print('开始...')
         try:
             while True:
@@ -228,6 +268,11 @@ class Main:
         conf.set('User', 'rk_password', rk_pwd.strip())
         with open(str(Path(os.getcwd()) / 'config.ini'), 'w', encoding='utf-8') as f:
             conf.write(f)
+
+    def about(self):
+        print('E-mail: bankroftvayne@gmail.com')
+        print('Blog: https://www.bankroft.cn')
+        webbrowser.open('https://www.bankroft.cn')
 
     @staticmethod
     def check_version():

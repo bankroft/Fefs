@@ -4,6 +4,7 @@ from PIL import Image
 from selenium import webdriver, common
 # import matplotlib.pyplot as plt
 from .config import *
+from .printinfo import print_info
 from console_erya.log import *
 from console_erya.questions import query_http_server
 import os
@@ -258,25 +259,44 @@ class Exam:
                 title = self.driver.find_element_by_xpath(
                     '//*[@id="submitTest"]//div[@class="Cy_TItle clearfix"]/div').text.strip().rstrip('分）').rstrip(
                     '0123456789').rstrip('.').rstrip('0123456789').rstrip('（').strip()
-                last_title = title
+                # last_title = title
                 right_answer = query_http_server(op='query', test_type=value, title=title)
-                logger.info(log_template, '查询', title, 'answer:{0}'.format(str(right_answer)))
+                # logger.info(log_template, '查询', title, 'answer:{0}'.format(str(right_answer)))
                 if value == '判断题':
-                    if right_answer:
-                        self.driver.find_elements_by_xpath('//*[@id="submitTest"]//ul[@class="Cy_ulBottom clearfix"]//li')[0].click()
+                    if right_answer[0]:
+                        if right_answer[2]:
+                            print_info(['查询到', title, '正确'], 'info', True)
+                            self.driver.find_elements_by_xpath('//*[@id="submitTest"]//ul[@class="Cy_ulBottom clearfix"]//li')[0].click()
+                        else:
+                            print_info(['查询到', title, '错误'], 'info', True)
+                            self.driver.find_elements_by_xpath('//*[@id="submitTest"]//ul[@class="Cy_ulBottom clearfix"]//li')[1].click()
                     else:
-                        self.driver.find_elements_by_xpath('//*[@id="submitTest"]//ul[@class="Cy_ulBottom clearfix"]//li')[1].click()
+                        print_info(log_template.format('判断', title, '未查到，选择正确'), 'notice', True)
                 elif value in ['单选题', '多选题']:
                     tag = 0
-                    if right_answer:
+                    if right_answer[0]:
+                        print_info(['查询到', title, ' '.join(right_answer[2])], 'info', True)
                         for y in self.driver.find_elements_by_xpath('//*[@id="submitTest"]//ul[@class="Cy_ulTop w-top"]/li'):
-                            if y.text.strip().lstrip(self.__select).lstrip('、').strip() in right_answer:
+                            if y.text.strip().lstrip(self.__select).lstrip('、').strip() in right_answer[2]:
                                 y.click()
                                 tag = 1
                     if not tag:
-                        logger.error(log_template, str(z)+':'+value, title, '未查到，选择第一项')
+                        if right_answer[3] in ['token', 'open']:
+                            print_info(['答案错误', title, '重新查询'], 'info', True)
+                            right_answer = query_http_server(op='query', defalut=False, test_type=value, title=title)
+                            tag = 0
+                            if right_answer[0]:
+                                print_info(['查询到', title, ' '.join(right_answer[2])], 'info', True)
+                                for y in self.driver.find_elements_by_xpath('//*[@id="submitTest"]//ul[@class="Cy_ulTop w-top"]/li'):
+                                    if y.text.strip().lstrip(self.__select).lstrip('、').strip() in right_answer[2]:
+                                        y.click()
+                                        tag = 1
+                            else:
+                                print_info(['查询失败', title, '随机选择一项'], 'notice', True)
+                        # logger.error(log_template, str(z)+':'+value, title, '未查到，选择第一项')
                         self.driver.find_elements_by_xpath('//*[@id="submitTest"]//ul[@class="Cy_ulTop w-top"]/li')[0].click()
                 else:
-                    logger.error(log_template, value, title, '不支持该题型')
+                    print_info(['查询', value + '暂不支持', '跳过'], 'notice', True)
+                    # logger.error(log_template, value, title, '不支持该题型')
                 # time.sleep(15)
 
