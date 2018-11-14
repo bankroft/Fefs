@@ -118,10 +118,11 @@ class Main:
             print('信息不完整，请重新运行功能: 1')
             return False
         if not use_rk_code:
-            print('请运行功能：3，设置若快平台账号和密码')
+            print('请运行功能：4，设置若快平台账号和密码')
             return False
         while True:
             try:
+                self.console = console.Console()
                 self.console.init()
                 self.console.search_school(self.account['school'])
                 self.console.select_school(self.account['sschool'])
@@ -129,7 +130,7 @@ class Main:
                 pwd_error = False
                 while True:
                     if pwd_error:
-                        print('密码错误，请重新运行共能：1')
+                        print('密码错误，请重新运行功能：1')
                         return False
                     file_name = self.console.get_login_ver_code(refresh=code_error, display=not use_rk_code)
                     code = rk_code(file_name)
@@ -146,16 +147,18 @@ class Main:
                             code_error = True
                         print('登 录 失 败:', r[0])
                 course = self.console.get_course()
-                self.console.browse_watch(self.account['course'])
                 print_info(['课程', course[self.account['course']], '开始'], 'info', True)
-                while True:
-                    time.sleep(10)
+                if self.console.browse_watch(self.account['course']):
+                    break
+                else:
+                    continue
             except KeyboardInterrupt:
                 print('结束')
                 return False
-            except:
-                print('错误，重新开始')
-                continue
+            # except:
+            #     print('错误，重新开始')
+            #     self.console.quit()
+            #     continue
 
     def autolearn(self):
         self.console.init()

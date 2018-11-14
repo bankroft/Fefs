@@ -5,7 +5,7 @@ from selenium import webdriver, common
 # import matplotlib.pyplot as plt
 from .config import *
 from .printinfo import print_info
-from console_erya.log import *
+# from console_erya.log import *
 from console_erya.questions import query_http_server
 import os
 from .automaticcompletion import AutomaticCompletion
@@ -13,13 +13,13 @@ from base64 import b64encode
 
 
 class Console:
-    status = {
-        'search_school': 0,
-        'select_school': 0,
-        'login': 0,
-        'get_course': 0,
-        'browser_watch': 0
-    }
+    # status = {
+    #     'search_school': 0,
+    #     'select_school': 0,
+    #     'login': 0,
+    #     'get_course': 0,
+    #     'browser_watch': 0
+    # }
     __base64_png = 'data:image/png;base64,'
     __select_school_result = []
     __course = []
@@ -34,14 +34,16 @@ class Console:
         #     "PluginsAllowedForUrls": "https://chaoxing.com"
         # }
         self.options = webdriver.ChromeOptions()
-        self.options.add_argument('--disable-extensions')
-        self.options.add_argument('--log-level=3')
-        self.options.add_argument('--slient')
-        self.options.add_argument('--disable-logging')
-        self.options.add_argument('--mute-audio')
-        self.options.add_argument('--headless')
-        self.options.add_argument('--disable-gpu')
-        self.options.add_argument('--window-size=1920,1080')
+        for x in chrome_option:
+            self.options.add_argument(x)
+        # self.options.add_argument('--disable-extensions')
+        # self.options.add_argument('--log-level=3')
+        # self.options.add_argument('--slient')
+        # self.options.add_argument('--disable-logging')
+        # self.options.add_argument('--mute-audio')
+        # self.options.add_argument('--headless')
+        # self.options.add_argument('--disable-gpu')
+        # self.options.add_argument('--window-size=1920,1080')
         # options.add_experimental_option("prefs", prefs)
         # self.driver = webdriver.Chrome(chrome_drive_path, chrome_options=options)
         # self.driver = webdriver.Chrome(chrome_drive_path)
@@ -93,7 +95,7 @@ class Console:
             except common.exceptions.NoSuchElementException:
                 return 'False', False
             return str(result_text), False
-        self.status['login'] = 1
+        # self.status['login'] = 1
         return str(name), True
 
     def search_school(self, school):
@@ -111,7 +113,7 @@ class Console:
         self.driver.find_element(select_school_search['type'], select_school_search['string']).send_keys(school)  # 向搜索框填入院校
         self.driver.find_element(select_school_search_button['type'], select_school_search_button['string']).click()  # 院校搜索
         self.__select_school_result = self.driver.find_elements(select_school_result['type'], select_school_result['string'])
-        self.status['search_school'] = 1
+        # self.status['search_school'] = 1
         return [x.text for x in self.__select_school_result]
 
     def select_school(self, id_: int):
@@ -119,7 +121,7 @@ class Console:
             self.__select_school_result[id_].click()
         except (TypeError, IndexError):
             return False
-        self.status['select_school'] = 1
+        # self.status['select_school'] = 1
         return True
 
     def get_login_ver_code(self, refresh=False, display=False):
@@ -185,7 +187,7 @@ class Console:
             #     self.__course.append(x)
             # except IndexError:
             #     continue
-        self.status['get_course'] = 1
+        # self.status['get_course'] = 1
         return [x.text for x in self.__course]
 
     def browse_watch(self, course_id):
@@ -214,9 +216,10 @@ class Console:
         #     tmp = {'name': y.text.replace('\n', '').strip(), 'link': x.get_attribute('href')}
         #     self.__course_lesson.append(tmp)
         # self.driver.close()
-        AutomaticCompletion(driver=self.driver, course_name=course_name).start()
-        self.status['browser_watch'] = 1
-        return True
+        # AutomaticCompletion(driver=self.driver, course_name=course_name).start()
+        return AutomaticCompletion(driver=self.driver, course_name=course_name).run()
+        # self.status['browser_watch'] = 1
+        # return True
 
     # def operate(self, type_, string, op, args=None):
     #     """
@@ -271,7 +274,7 @@ class Exam:
                             print_info(['查询到', title, '错误'], 'info', True)
                             self.driver.find_elements_by_xpath('//*[@id="submitTest"]//ul[@class="Cy_ulBottom clearfix"]//li')[1].click()
                     else:
-                        print_info(log_template.format('判断', title, '未查到，选择正确'), 'notice', True)
+                        print_info(['判断', title, '未查到，选择正确'], 'notice', True)
                 elif value in ['单选题', '多选题']:
                     tag = 0
                     if right_answer[0]:

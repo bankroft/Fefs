@@ -22,6 +22,9 @@ token = conf.get('User', 'token')
 # chrome 驱动
 chrome_drive_path = str(Path(getcwd()) / 'chromedriver.exe') if not conf.get('chromedriver', 'path', fallback=False) else conf.get('chromedriver', 'path', fallback=False)
 
+# chrome options
+chrome_option = ['--disable-extensions', '--log-level=3', '--slient', '--disable-logging', '--mute-audio', '--headless', '--disable-gpu', '--window-size=1920,1080']
+
 # log file path
 logfile_path = str(Path(getcwd()) / 'temp' / 'Fefs.log')
 
@@ -225,7 +228,7 @@ select_school_search_button = {
 # 院校搜索结果
 select_school_result = {
     'type': 'xpath',
-    'string': '//*[@id="searchForms"]/li'
+    'string': '//*[@id="searchForms"]/li[@class="zw_m_li"]/span/a'
 }
 
 # 待刷课程frame

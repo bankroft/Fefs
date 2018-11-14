@@ -20,7 +20,8 @@ headers = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.100 Safari/537.36'
 }
 
-class AutomaticCompletion(threading.Thread):
+# class AutomaticCompletion(threading.Thread):
+class AutomaticCompletion:
     # 生成choices(string.printable, k=16)
     __select = ''.join([chr(x) for x in range(65, 91)])
     __course = []
@@ -138,6 +139,7 @@ class AutomaticCompletion(threading.Thread):
         #     if complete_tag == 0:
         #         break
         print_info(['课程', self.course_name if self.course_name else '没记录课程名字', '完成'], 'info', True)
+        return True
         # logger.info(log_template, '课程结束', self.course_name if self.course_name else '没记录课程名字', '完成')
         # for x in self.course_lesson:
         #     logger.info(log_template, 'Watch', x['name'], 'Start')
