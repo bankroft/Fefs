@@ -1,4 +1,5 @@
 # coding:utf-8
+print('软件初始化中...')
 import __version__
 from console_erya.printinfo import print_info
 from console_erya import console

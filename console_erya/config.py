@@ -24,20 +24,23 @@ if 'temp' not in listdir(str(Path(getcwd()))):
     mkdir(folder_temp_path)
 
 
+token = conf.get('User', 'token')
+
+
 def get_config(name):
-    i = 0
+    i = 1
     while i <= 3:
         enc = md5((name + config_string_enc).encode()).hexdigest()
         i += 1
         try:
-            res = requests.get(url_get_config, params={'name': name, 'enc': enc}).json()
+            res = requests.get(url_get_config, params={'name': name, 'enc': enc, 'token': token}).json()
         except:
             continue
         if res['code'] == 100:
             data = res['data']
             if data['kind'] == 'list':
                 try:
-                    demjson.decode(data['string'], encoding='utf-8')
+                    return demjson.decode(data['string'], encoding='utf-8')
                 except demjson.JSONDecodeError:
                     continue
             else:
@@ -97,264 +100,111 @@ class ConsoleConfig:
     select_school_search = get_config('select_school_search')
 
     # 院校搜索按钮
-    select_school_search_button = {
-        'type': 'xpath',
-        'string': '//*[@id="dialog1"]/div/div[1]/ul/li[2]/input[2]'
-    }
+    select_school_search_button = get_config('select_school_search_button')
 
     # 院校搜索结果
-    select_school_result = {
-        'type': 'xpath',
-        'string': '//*[@id="searchForms"]/li[@class="zw_m_li"]/span/a'
-    }
+    select_school_result = get_config('select_school_result')
     
     # 刷新验证码
-    refresh_code = {
-        'type': 'xpath',
-        'string': '//*[@id="numVerCode_tr"]//a'
-    }
+    refresh_code = get_config('refresh_code')
 
-    # 验证码框
-    code = {
-        'type': 'id',
-        'string': 'numVerCode'
-    }
+    # 登陆验证码框
+    code = get_config('code')
 
     # 首页课程
-    lesson_index = {
-        'type': 'id',
-        'string': 'zne_kc_icon'
-    }
+    lesson_index = get_config('lesson_index')
 
     # 待刷课程frame
-    course_name_list_frame = [
-        {
-            'name': 'iframe',
-            'index': 0
-        }
-    ]
+    course_name_list_frame = get_config('course_name_list_frame')
 
     # 课程列表
-    course_name_list = {
-        'type': 'xpath',
-        'string': '//div[@class="Mconright httpsClass"]/h3/a'
-        #'string': '/html/body/div/div[2]/div[2]/ul/li'
-    }
+    course_name_list = get_config('course_name_list')
 
     # 课程页面标题
     course_page_title = '学习进度页面'
   
     # 第一节课程xpath
-    first_lesson = {
-        'type': 'xpath',
-        'string': '//div[@class="leveltwo"]//span[@class="articlename"]',
-        # 'string': '/html/body/div[7]/div[1]/div[2]/div[3]/div[1]/div[1]/h3/span[2]/a'
-    }
+    first_lesson = get_config('first_lesson')
 
 
 class AutomaticcompletionConfig:
     # 学习页面未完成课程
-    not_completed_lesson = {
-        'type': 'xpath',
-        # 'string': [
-        #     '//div[@class="ncells"]/a//span[@class="roundpointStudent  orange01 a002"]/../..', 
-        #     '//div[@class="ncells"]/a//span[@class="roundpoint  orange01"]/../..',
-        #     '//div[@class="ncells"]/a//span[@class="roundpointStudent"]/../..',
-        #     ]
-        'string': '//div[@class="ncells"]/a//span[@class="roundpointStudent  orange01 a002" or @class="roundpoint  orange01" or @class="roundpointStudent"]/../..'
-    }
+    not_completed_lesson = get_config('not_completed_lesson')
 
     # 课程名称
-    lesson_name = {
-        'type': 'xpath',
-        'string': '//div[@id="mainid"]/h1'
-    }
+    lesson_name = get_config('lesson_name')
 
     # 学习页面视频iframe
-    learn_page_video_iframe = [
-        {
-            'name': 'iframe',
-            'index': 0
-        },
-        {
-            'name': 'iframe',
-            'index': 0
-        }
-    ]
+    learn_page_video_iframe = get_config('learn_page_video_iframe')
 
     # 视频答题获取URL
     video_answer_url = 'https://mooc1-1.chaoxing.com/richvideo/initdatawithviewer?mid={0}&_dc={1}'
 
     # 学习页面进入视频部分iframe
-    learn_page_video_part_iframe = [
-        {
-            'name': 'iframe',
-            'index': 0
-        }
-    ]
+    learn_page_video_part_iframe = get_config('learn_page_video_part_iframe')
 
     # 视频完成状态，如果xpath不报错则表示已完成
-    video_complete_status = {
-        'type': 'xpath',
-        'string': '//div[@class="ans-attach-ct ans-job-finished"]'
-    }
+    video_complete_status = get_config('video_complete_status')
 
     # 任务未完成
-    video_not_complete_status = {
-        'type': 'xpath',
-        'string': '//div[@class="ans-attach-ct"]/div[@class="ans-job-icon"]'
-    }
+    video_not_complete_status = get_config('video_not_complete_status')
 
     # 学习页面[视频]按钮
-    learn_page_video_button = {
-        'type': 'xpath',
-        'string': '//span[contains(@title, "视频")]'
-        # 'string': '//span[starts-with(@title, "视频")]'
-    }
+    learn_page_video_button = get_config('learn_page_video_button')
 
     # 学习页面章节测验按钮
-    learn_page_test_button = {
-        'type': 'xpath',
-        # 'string': ['//span[contains(@title, "章节测验")]', '//span[contains(@title, "作业")]']
-        'string': '//span[contains(@title, "章节测验")]|//span[contains(@title, "作业")]'
-    }
+    learn_page_test_button = get_config('learn_page_test_button')
 
     # 章节测试加载完成标志iframe
-    test_load_complete_tag_iframe = [
-        {
-            'name': 'iframe',
-            'index': 0
-        },
-        {
-            'name': 'iframe',
-            'index': 0
-        },
-        {
-            'name': 'iframe',
-            'index': 0
-        }
-    ]
+    test_load_complete_tag_iframe = get_config('test_load_complete_tag_iframe')
 
     # 章节测试加载完成标志
-    test_load_complete_tag = {
-        'type': 'xpath',
-        'string': '//*[@id="RightCon"]/div/div/div[1]/h3'
-    }
+    test_load_complete_tag = get_config('test_load_complete_tag')
 
     # 学习页面章节测试完成状态iframe
-    learn_page_test_status_iframe = [
-        {
-            'name': 'iframe',
-            'index': 0
-        }
-    ]
+    learn_page_test_status_iframe = get_config('learn_page_test_status_iframe')
 
     # 章节测验完成状态，如果xpath不报错则表示已完成
-    test_complete_stataus = {
-        'type': 'xpath',
-        'string': '//div[@class="ans-attach-ct ans-job-finished"]/div'
-    }
+    test_complete_stataus = get_config('test_complete_stataus')
 
     # 章节测试内容iframe
-    learn_page_test_iframe = [
-        {
-            'name': 'iframe',
-            'index': 0
-        },
-        {
-            'name': 'iframe',
-            'index': 0
-        },
-        {
-            'name': 'iframe',
-            'index': 0
-        }
-    ]
+    learn_page_test_iframe = get_config('learn_page_test_iframe')
 
-    Timu = {
-        'type': 'class_name',
-        'string': 'TiMu'
-    }
+    # 题目
+    Timu = get_config('Timu')
 
     # 未查到答案等待时间
     noanswer_sleep = conf.getint('User', 'noanswer_sleep', fallback=5) if conf.getint('User', 'noanswer_sleep', fallback=5) >= 1 else 5
 
     # 章节测试提交frame
-    test_submit_iframe = [
-        {
-            'name': 'iframe',
-            'index': 0
-        },
-        {
-            'name': 'iframe',
-            'index': 0
-        },
-        {
-            'name': 'iframe',
-            'index': 0
-        }
-    ]
+    test_submit_iframe = get_config('test_submit_iframe')
 
     # 章节测验提交 //*[@id="ZyBottom"]/div/div[4]/div[4]/div[5]/a[2]  //*[@id="ZyBottom"]/div[1]/div[4]/div[5]/a[2]
-    submit_test = {
-        'type': 'xpath',
-        'string': '//div[@class="ZY_sub clearfix"]/a[2]'
-    }
+    submit_test = get_config('submit_test')
 
     # 章节测验确认提交
-    submit_test_confirm = {
-        'type': 'xpath',
-        'string': '//*[@id="confirmSubWin"]/div/div/a[1]'
-    }
+    submit_test_confirm = get_config('submit_test_confirm')
 
     # 章节测验确认后验证码区域
-    submit_test_validate = {
-        'type': 'id',
-        'string': 'validate'
-    }
+    submit_test_validate = get_config('submit_test_validate')
 
     # 章节测验提交验证码输入框
-    submit_test_code_input = {
-        'type': 'id',
-        'string': 'code'
-    }
+    submit_test_code_input = get_config('submit_test_code_input')
 
     # 章节测验提交验证码按钮
-    submit_test_code_button = {
-        'type': 'id',
-        'string': 'sub'
-    }
+    submit_test_code_button = get_config('submit_test_code_button')
 
     # 章节测试内容更新数据库iframe
-    learn_page_test_iframe_updatedb = [
-        {
-            'name': 'iframe',
-            'index': 0
-        },
-        {
-            'name': 'iframe',
-            'index': 0
-        },
-        {
-            'name': 'iframe',
-            'index': 0
-        }
-    ]
+    learn_page_test_iframe_updatedb = get_config('learn_page_test_iframe_updatedb')
 
     # 章节测验提交后验证码
-    submit_test_imgcode = {
-        'type': 'id',
-        'string': 'imgVerCode'
-    }
+    submit_test_imgcode = get_config('submit_test_imgcode')
 
     # 线路(本校/公网等)
     internet_line = conf.get('User', 'internet_line', fallback='公网1')
 
     # video_object
-    video_object = {
-        'type': 'id',
-        'string': 'video_html5_api'
-    }
+    video_object = get_config('video_object')
 
 
 
@@ -372,4 +222,4 @@ class QuestionConfig:
     wechat_mp = [x for x in conf.get('User', 'wechat_mp').split()]
 
     # 题库token
-    token = conf.get('User', 'token')
+    token = token
