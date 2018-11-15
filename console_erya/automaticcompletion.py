@@ -47,7 +47,7 @@ class AutomaticCompletion:
                 if last_lesson == now_lesson:
                     if retry == 0:
                         print_info(['出错', '无法检测视频(【{0}】)状态,请关闭程序手动观看该节课程'.format(last_lesson), '重试'], 'verbose', True, all_output=True)
-                        return False
+                        return False, False
                     else:
                         print_info(['出错', '视频(【{0}】)播放错误'.format(last_lesson), '重试'], 'warning', True, all_output=True)
                         retry -= 1
@@ -69,12 +69,16 @@ class AutomaticCompletion:
                 else:
                     continue
                 print_info(['章节测验', now_lesson, '开始'], 'info', True)
-                self.__answer()
+                ans = self.__answer()
                 print_info(['章节测验', now_lesson, '完成'], 'info', True)
                 print_info(['更新正确题目', now_lesson, '开始'], 'info', True)
-                self.__update_db()
+                updb = self.__update_db()
                 print_info(['更新正确题目', now_lesson, '完成'], 'info', True)
                 self.driver.get_screenshot_as_file(os.path.join(folder_temp_path, ''.join(choices(ascii_letters, k=8))+'.png'))
+                if not ans and not updb:
+                    if now_lesson.strip() == '阅读':
+                        print_info(['出错', '阅读页面', '请手动完成'], 'error', timz=True, all_output=True)
+                        return False, False
                 # time.sleep(10)
             except common.exceptions.NoSuchElementException:
                 break
@@ -237,7 +241,7 @@ class AutomaticCompletion:
         try:
             self.driver.find_element(ac.learn_page_test_button['type'], ac.learn_page_test_button['string']).click()
         except common.exceptions.NoSuchElementException:
-            return True
+            return False
         except common.exceptions.StaleElementReferenceException:
             return False
         start_time = time.time()

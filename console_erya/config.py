@@ -25,6 +25,9 @@ if 'temp' not in listdir(str(Path(getcwd()))):
 
 
 token = conf.get('User', 'token')
+if not token:
+    print('未配置token')
+    exit(0)
 
 
 def get_config(name):

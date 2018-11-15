@@ -149,17 +149,18 @@ class Main:
                         print('登 录 失 败:', r[0])
                 course = self.console.get_course()
                 print_info(['课程', course[self.account['course']], '开始'], 'info', True)
-                if self.console.browse_watch(self.account['course']):
+                t = self.console.browse_watch(self.account['course'])
+                if t[0] or (not t[0] and not t[0]):
                     break
-                else:
+                elif not t[0] and t[1]:
                     continue
             except KeyboardInterrupt:
                 print('结束')
                 return False
-            # except:
-            #     print('错误，重新开始')
-            #     self.console.quit()
-            #     continue
+            except:
+                print('错误，重新开始')
+                self.console.quit()
+                continue
 
     def autolearn(self):
         self.console.init()
