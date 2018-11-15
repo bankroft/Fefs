@@ -4,7 +4,7 @@ import re
 from random import choice
 from wxpy import Bot, ensure_one, SHARING
 import threading
-from .config import wechat_mp
+from .config import QuestionConfig as qc
 import time
 from logzero import logger
 import sys
@@ -23,7 +23,7 @@ messages = []
 # bot = Bot(cache_path=True, console_qr=1)
 bot = Bot(cache_path=True)
 try:
-    target = [ensure_one(bot.search(x)) for x in wechat_mp]
+    target = [ensure_one(bot.search(x)) for x in qc.wechat_mp]
 except ValueError:
     print('请先关注config.ini文件里所配置的wechat公众号，如已关注请反馈该BUG')
     os.system('pause')

@@ -1,12 +1,13 @@
 # coding:utf-8
 import configparser
 from pathlib import Path
-from os import getcwd, listdir, mkdir
+from os import getcwd, listdir, mkdir, system
 from utils.utils import rk_bool
 import requests
 import demjson
 from hashlib import md5
 from console_erya.printinfo import print_info
+import sys
 
 
 conf = configparser.ConfigParser()
@@ -24,10 +25,11 @@ if 'temp' not in listdir(str(Path(getcwd()))):
     mkdir(folder_temp_path)
 
 
-token = conf.get('User', 'token')
+token = conf.get('User', 'token', fallback=False)
 if not token:
     print('未配置token')
-    exit(0)
+    system('pause')
+    sys.exit(0)
 
 
 def get_config(name):
