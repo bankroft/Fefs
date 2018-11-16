@@ -93,7 +93,7 @@ def query_http_server(op, defalut=True, **kwargs):
                     if tmp in ['√', '正确', 'true']:
                         return True, 100, True
                     else:
-                        return True, 100, True
+                        return True, 100, False
                 else:
                     return True, 100, tmp, 'wechat_mp'
             return False, 102, '未查到', ' '
