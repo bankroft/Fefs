@@ -3,7 +3,7 @@ print('软件初始化中...')
 import __version__
 from console_erya.printinfo import print_info
 from console_erya import console
-from console_erya.config import use_rk_code, token
+from console_erya.config import use_rk_code#, token
 from utils.utils import rk_code
 import os
 import json

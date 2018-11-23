@@ -11,7 +11,8 @@ def wechat_search(title):
 
 
 if len(qc.wechat_mp) >= 1:
-    from .wechatsearch import search
+    # from .wechatsearch import search
+    from .wechat_mp import search
     wechat_search = search
 string_enc = '-b?M#JvMg2y3$JMk'
 table = None

@@ -36,6 +36,7 @@ def run_wechat():
         global messages
         try:
             answer = minidom.parseString(msg.raw['Content'].replace('\x01', '&')).getElementsByTagName('des')[0].firstChild.nodeValue
+            print(answer)
             if answer:
                 messages.append(answer)
         except:
