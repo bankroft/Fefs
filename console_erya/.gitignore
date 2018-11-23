@@ -3,7 +3,7 @@ __pycache__/
 *.py[cod]
 *$py.class
 *.log
-*.bak
+*.bak*
 *.png
 
 third_party_api.py
