@@ -70,6 +70,7 @@ class Main:
         self.register_function(description='考试', func=self.exam)
         self.register_function(description='设置', func=self.setting)
         self.register_function(description='关于', func=self.about)
+        self.register_function(description='刷课(需要再次登陆,临时功能)', func=self.relogin)
         self.ui.ex_info(info)
 
     def save_account(self):
@@ -181,6 +182,28 @@ class Main:
         except KeyboardInterrupt:
             print('KeyboardInterrupt')
             exit(0)
+
+    def relogin(self):
+        self.console.init()
+        self.login()
+        self.console.driver.switch_to.frame(self.console.driver.find_elements_by_tag_name('iframe')[0])
+        self.login()
+        course = self.console.get_course()
+        # i = {str(key+1)+':': value for key, value in enumerate(course)}
+        # i[''] = '请选择观看的课程'
+        # self.ui.ex_info(i)
+        self.ui.pretty_table(['编号', '课程'], [[key+1, value] for key, value in enumerate(course)])
+        s = self.input_select('请选择', 1, len(course)) - 1
+        self.account['course'] = s
+        self.save_account()
+        self.console.browse_watch(s)
+        print('开始...')
+        try:
+            while True:
+                time.sleep(10)
+        except KeyboardInterrupt:
+            print('KeyboardInterrupt')
+            exit(0)
     
     def login(self):
         if self.account:
@@ -271,6 +294,8 @@ class Main:
         conf.set('User', 'rk_username', rk_username.strip())
         rk_pwd = input('若快平台密码：')
         conf.set('User', 'rk_password', rk_pwd.strip())
+        relogin = self.input_confirm('是否登陆后还需要再重新登陆?(Y/N)：')
+        conf.set('User', 'relogin', relogin.__str__())
         with open(str(Path(os.getcwd()) / 'config.ini'), 'w', encoding='utf-8') as f:
             conf.write(f)
 

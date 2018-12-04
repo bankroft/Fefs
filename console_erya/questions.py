@@ -54,9 +54,9 @@ def query_http_server(op, defalut=True, **kwargs):
                                     if isinstance(i['data'], list):
                                         i['data'] = i['data'][0]
                                     if i['data'].lower() in ['√', '正确', 'true']:
-                                        return True, 100, True
+                                        return True, 100, True, 'token'
                                     else:
-                                        return True, 100, False
+                                        return True, 100, False, 'token'
                                 else:
                                     return True, 100, re.split(r, i['data']), 'token'
                         # else:
@@ -77,9 +77,9 @@ def query_http_server(op, defalut=True, **kwargs):
                                     if isinstance(i['data'], list):
                                         i['data'] = i['data'][0]
                                     if i['data'].lower() in ['√', '正确', 'true']:
-                                        return True, 100, True
+                                        return True, 100, True, 'open'
                                     else:
-                                        return True, 100, False
+                                        return True, 100, False, 'open'
                                 else:
                                     return True, 100, re.split(r, i['data']), 'open'
                         # else:
@@ -92,9 +92,9 @@ def query_http_server(op, defalut=True, **kwargs):
                     if isinstance(tmp, list):
                         tmp = tmp[0]
                     if tmp in ['√', '正确', 'true']:
-                        return True, 100, True
+                        return True, 100, True, 'wechat_mp'
                     else:
-                        return True, 100, False
+                        return True, 100, False, 'wechat_mp'
                 else:
                     return True, 100, tmp, 'wechat_mp'
             return False, 102, '未查到', ' '

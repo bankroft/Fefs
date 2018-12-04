@@ -241,7 +241,8 @@ class AutomaticCompletion:
         try:
             self.driver.find_element(ac.learn_page_test_button['type'], ac.learn_page_test_button['string']).click()
         except common.exceptions.NoSuchElementException:
-            return False
+            # False ==> True, 无这两个标签说明该章节没有测试
+            return True
         except common.exceptions.StaleElementReferenceException:
             return False
         start_time = time.time()
