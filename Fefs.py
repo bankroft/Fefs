@@ -1,5 +1,5 @@
 # coding:utf-8
-print('软件初始化中...')
+# print('软件初始化中...')
 import __version__
 from console_erya.printinfo import print_info
 from console_erya import console
@@ -18,9 +18,9 @@ import requests
 
 
 info = {
-    'Version: ': __version__.__version__,
-    'Author: ': __version__.__author__,
-    'Blog: ': __version__.__blog__,
+    'Version': __version__.__version__,
+    'Author': __version__.__author__,
+    'Blog': __version__.__blog__,
 }
 
 function = {
@@ -71,7 +71,14 @@ class Main:
         self.register_function(description='设置', func=self.setting)
         self.register_function(description='关于', func=self.about)
         self.register_function(description='刷课(需要再次登陆,临时功能)', func=self.relogin)
-        self.ui.ex_info(info)
+        print(r"""___________       _____                  __________                  __                     _____   __   
+\_   _____/____ _/ ____\______           \______   \_____     ____  |  | _________   ____ _/ ____\_/  |_ 
+ |    __)_/ __ \\   __\/  ___/   ______   |    |  _/\__  \   /    \ |  |/ /\_  __ \ /  _ \\   __\ \   __\
+ |     \ \  ___/ |  |  \___ \   /_____/   |    |   \ / __ \_|   |  \|    <  |  | \/(  <_> )|  |    |  |  
+ \___  /  \___  >|__| /____  >            |______  /(____  /|___|  /|__|_ \ |__|    \____/ |__|    |__|  
+     \/       \/           \/                    \/      \/      \/      \/ """)
+        print('\n\n')
+        # self.ui.ex_info(info)
 
     def save_account(self):
         with open('./temp/account.b4', 'wb') as f:
@@ -302,6 +309,7 @@ class Main:
     def about(self):
         print('E-mail: bankroftvayne@gmail.com')
         print('Blog: https://www.bankroft.cn')
+        print('Version:', info['Version'])
         webbrowser.open('https://www.bankroft.cn')
 
     @staticmethod

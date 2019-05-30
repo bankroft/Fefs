@@ -160,7 +160,7 @@ class AutomaticcompletionConfig:
         #     '//div[@class="ncells"]/a//span[@class="roundpoint  orange01"]/../..',
         #     '//div[@class="ncells"]/a//span[@class="roundpointStudent"]/../..',
         #     ]
-        'string': '//div[@class="ncells"]/a//span[@class="roundpointStudent  orange01 a002" or @class="roundpoint  orange01" or @class="roundpointStudent"]/../..'
+        'string': '//div[@class="ncells"]//span[@class="roundpointStudent  orange01 a002" or @class="roundpoint  orange01" or @class="roundpointStudent" or @class="roundpointStudent  orange01 a002 jobCount"]/../..'
     }
 
     # 课程名称
