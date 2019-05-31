@@ -32,7 +32,7 @@ class ConsoleConfig:
         '--slient', 
         '--disable-logging', 
         '--mute-audio', 
-        '--headless', 
+        '--headless',
         '--disable-gpu', 
         '--window-size=1920,1080',
     ]
@@ -160,7 +160,7 @@ class AutomaticcompletionConfig:
         #     '//div[@class="ncells"]/a//span[@class="roundpoint  orange01"]/../..',
         #     '//div[@class="ncells"]/a//span[@class="roundpointStudent"]/../..',
         #     ]
-        'string': '//div[@class="ncells"]//span[@class="roundpointStudent  orange01 a002" or @class="roundpoint  orange01" or @class="roundpointStudent" or @class="roundpointStudent  orange01 a002 jobCount"]/../..'
+        'string': '//div[@class="ncells"]//span[@class="roundpointStudent  orange01 a002" or @class="roundpoint  orange01" or @class="roundpointStudent" or @class="roundpointStudent  orange01 a002 jobCount"]/../a'
     }
 
     # 课程名称

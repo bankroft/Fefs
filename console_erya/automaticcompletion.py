@@ -79,6 +79,9 @@ class AutomaticCompletion:
                     if now_lesson.strip() == '阅读':
                         print_info(['出错', '阅读页面', '请手动完成'], 'error', timz=True, all_output=True)
                         return False, False
+                    else:
+                        print_info(['警报', '该章节可能无章节测验', '跳过'], 'warning', True, all_output=True)
+                        return False, False
                 # time.sleep(10)
             except common.exceptions.NoSuchElementException:
                 break
