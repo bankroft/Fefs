@@ -1,21 +1,22 @@
 # coding:utf-8
 # print('软件初始化中...')
-import __version__
-from console_erya.printinfo import print_info
-from console_erya import console
-from console_erya.config import use_rk_code#, token
-from utils.utils import rk_code
-import os
-import json
 import base64
+import configparser
+import json
+import os
 import sys
 import time
-from pathlib import Path
-from prettytable import PrettyTable
-import configparser
 import webbrowser
-import requests
+from pathlib import Path
 
+import requests
+from prettytable import PrettyTable
+
+import __version__
+from console_erya import console
+from console_erya.config import use_rk_code  # , token
+from console_erya.printinfo import print_info
+from utils.utils import rk_code
 
 info = {
     'Version': __version__.__version__,
@@ -57,7 +58,7 @@ class UI:
 
 
 class Main:
-    
+
     def __init__(self):
         self.ui = UI()
         self.console = console.Console()
@@ -66,11 +67,13 @@ class Main:
         self.function = {}
         self.read_account()
         self.register_function(description='刷课', func=self.autolearn)
-        self.register_function(description='刷课(自动重登)', func=self.while_true_learn)
+        self.register_function(description='刷课(自动重登)',
+                               func=self.while_true_learn)
         self.register_function(description='考试', func=self.exam)
         self.register_function(description='设置', func=self.setting)
         self.register_function(description='关于', func=self.about)
-        self.register_function(description='刷课(需要再次登陆,临时功能)', func=self.relogin)
+        self.register_function(
+            description='刷课(需要再次登陆,临时功能)', func=self.relogin)
         print(r"""___________       _____                  __________                  __                     _____   __   
 \_   _____/____ _/ ____\______           \______   \_____     ____  |  | _________   ____ _/ ____\_/  |_ 
  |    __)_/ __ \\   __\/  ___/   ______   |    |  _/\__  \   /    \ |  |/ /\_  __ \ /  _ \\   __\ \   __\
@@ -90,9 +93,10 @@ class Main:
                 self.account = json.loads(base64.b64decode(f.read()).decode())
         except:
             pass
-    
+
     def register_function(self, **kwargs):
-        self.function[len(self.function.keys()) + 1] = {'desc': kwargs['description'], 'func': kwargs['func']}
+        self.function[len(self.function.keys()) +
+                      1] = {'desc': kwargs['description'], 'func': kwargs['func']}
 
     def input_select(self, hint, start, end):
         while True:
@@ -107,7 +111,7 @@ class Main:
             if (i >= start) and (i <= end):
                 return i
             print('输入错误')
-    
+
     def input_confirm(self, hint):
         while True:
             i = input(hint+'(Y/N): ').strip().upper()
@@ -115,10 +119,11 @@ class Main:
                 return True
             elif i == 'N':
                 return False
-    
+
     def start(self):
         # self.check_version()
-        self.ui.ex_info({k.__str__()+': ': v['desc'] for k, v in self.function.items()})
+        self.ui.ex_info({k.__str__()+': ': v['desc']
+                         for k, v in self.function.items()})
         i = self.input_select('请输入选项数字', 1, len(self.function.keys()))
         self.function[i]['func']()
 
@@ -141,11 +146,13 @@ class Main:
                     if pwd_error:
                         print('密码错误，请重新运行功能：1')
                         return False
-                    file_name = self.console.get_login_ver_code(refresh=code_error, display=not use_rk_code)
+                    file_name = self.console.get_login_ver_code(
+                        refresh=code_error, display=not use_rk_code)
                     code = rk_code(file_name)
                     print('登陆验证码为：', code)
                     print('登录中...')
-                    r = self.console.login(self.account['num'], self.account['pwd'], code)
+                    r = self.console.login(
+                        self.account['num'], self.account['pwd'], code)
                     if r[1]:
                         print('登 录 成 功 :'+r[0])
                         break
@@ -156,7 +163,8 @@ class Main:
                             code_error = True
                         print('登 录 失 败:', r[0])
                 course = self.console.get_course()
-                print_info(['课程', course[self.account['course']], '开始'], 'info', True)
+                print_info(
+                    ['课程', course[self.account['course']], '开始'], 'info', True)
                 t = self.console.browse_watch(self.account['course'])
                 if t[0] or (not t[0] and not t[0]):
                     break
@@ -177,7 +185,8 @@ class Main:
         # i = {str(key+1)+':': value for key, value in enumerate(course)}
         # i[''] = '请选择观看的课程'
         # self.ui.ex_info(i)
-        self.ui.pretty_table(['编号', '课程'], [[key+1, value] for key, value in enumerate(course)])
+        self.ui.pretty_table(['编号', '课程'], [[key+1, value]
+                                            for key, value in enumerate(course)])
         s = self.input_select('请选择', 1, len(course)) - 1
         self.account['course'] = s
         self.save_account()
@@ -193,13 +202,15 @@ class Main:
     def relogin(self):
         self.console.init()
         self.login()
-        self.console.driver.switch_to.frame(self.console.driver.find_elements_by_tag_name('iframe')[0])
+        self.console.driver.switch_to.frame(
+            self.console.driver.find_elements_by_tag_name('iframe')[0])
         self.login()
         course = self.console.get_course()
         # i = {str(key+1)+':': value for key, value in enumerate(course)}
         # i[''] = '请选择观看的课程'
         # self.ui.ex_info(i)
-        self.ui.pretty_table(['编号', '课程'], [[key+1, value] for key, value in enumerate(course)])
+        self.ui.pretty_table(['编号', '课程'], [[key+1, value]
+                                            for key, value in enumerate(course)])
         s = self.input_select('请选择', 1, len(course)) - 1
         self.account['course'] = s
         self.save_account()
@@ -211,7 +222,7 @@ class Main:
         except KeyboardInterrupt:
             print('KeyboardInterrupt')
             exit(0)
-    
+
     def login(self):
         if self.account:
             if self.input_confirm('是否使用上次的账号({0})登录'.format(self.account['name'])):
@@ -228,7 +239,8 @@ class Main:
             sschool = self.account['sschool']
         else:
             # self.ui.ex_info(i)
-            self.ui.pretty_table(['编号', '学校'], [[key+1, value] for key, value in enumerate(rschool)])
+            self.ui.pretty_table(['编号', '学校'], [[key+1, value]
+                                                for key, value in enumerate(rschool)])
             sschool = self.input_select('请选择学校', 1, len(rschool)) - 1
             self.account['sschool'] = sschool
         if self.console.select_school(sschool):
@@ -251,7 +263,8 @@ class Main:
             if pwd_error:
                 pwd = input('输入密码：').strip()
                 self.account['pwd'] = pwd
-            file_name = self.console.get_login_ver_code(refresh=code_error, display=not use_rk_code)
+            file_name = self.console.get_login_ver_code(
+                refresh=code_error, display=not use_rk_code)
             if use_rk_code:
                 code = rk_code(file_name)
                 print('登陆验证码为：', code)
@@ -270,7 +283,6 @@ class Main:
                     code_error = True
                 print('登 录 失 败:', r[0])
 
-
     def exam(self):
         t = console.Exam()
         while True:
@@ -280,7 +292,7 @@ class Main:
                 t.start()
             elif re == 'N':
                 sys.exit(0)
-    
+
     def setting(self):
         conf = configparser.ConfigParser()
         conf.read(str(Path(os.getcwd()) / 'config.ini'), encoding='utf-8')
@@ -315,7 +327,8 @@ class Main:
     @staticmethod
     def check_version():
         try:
-            res = requests.get('https://raw.githubusercontent.com/bankroft/Fefs/master/__version__.py').text.split('\n')
+            res = requests.get(
+                'https://raw.githubusercontent.com/bankroft/Fefs/master/__version__.py').text.split('\n')
         except:
             print('无法检测新版本，如果无法观看请手动检查')
             return False
@@ -326,9 +339,8 @@ class Main:
                 break
         if __version__.__version__ != new_version:
             print('检测到新版本: ', new_version)
-    
 
-    
+
 if __name__ == '__main__':
     Main().start()
     os.system('pause')

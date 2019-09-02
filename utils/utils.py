@@ -1,7 +1,9 @@
 # coding:utf-8
-import requests
 from hashlib import md5
-from .config import rk_username, rk_password
+
+import requests
+
+from .config import rk_password, rk_username
 
 rk_bool = False
 if rk_username and rk_password:
@@ -38,4 +40,3 @@ def ocr(filename):
 
 def auth_ocr():
     pass
-

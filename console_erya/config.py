@@ -1,13 +1,14 @@
 # coding:utf-8
 import configparser
-from pathlib import Path
-from os import getcwd, listdir, mkdir
-from utils.utils import rk_bool
-import requests
-import demjson
 from hashlib import md5
-from console_erya.printinfo import print_info
+from os import getcwd, listdir, mkdir
+from pathlib import Path
 
+import demjson
+import requests
+
+from console_erya.printinfo import print_info
+from utils.utils import rk_bool
 
 conf = configparser.ConfigParser()
 conf.read(str(Path(getcwd()) / 'config.ini'), encoding='utf-8')
@@ -27,18 +28,19 @@ if 'temp' not in listdir(str(Path(getcwd()))):
 class ConsoleConfig:
     # chrome options
     chrome_option = [
-        '--disable-extensions', 
-        '--log-level=3', 
-        '--slient', 
-        '--disable-logging', 
-        '--mute-audio', 
+        '--disable-extensions',
+        '--log-level=3',
+        '--slient',
+        '--disable-logging',
+        '--mute-audio',
         '--headless',
-        '--disable-gpu', 
+        '--disable-gpu',
         '--window-size=1920,1080',
     ]
 
     # chrome 驱动
-    chrome_drive_path = str(Path(getcwd()) / 'chromedriver.exe') if not conf.get('chromedriver', 'path', fallback=False) else conf.get('chromedriver', 'path', fallback=False)
+    chrome_drive_path = str(Path(getcwd()) / 'chromedriver.exe') if not conf.get(
+        'chromedriver', 'path', fallback=False) else conf.get('chromedriver', 'path', fallback=False)
 
     # driver超时设置
     timeout = 10
@@ -57,7 +59,6 @@ class ConsoleConfig:
         'type': 'id',
         'string': 'unameId'
     }
-
 
     # 登陆密码输入框位置
     login_password = {
@@ -106,7 +107,7 @@ class ConsoleConfig:
         'type': 'xpath',
         'string': '//*[@id="searchForms"]/li[@class="zw_m_li"]/span/a'
     }
-    
+
     # 刷新验证码
     refresh_code = {
         'type': 'xpath',
@@ -137,12 +138,12 @@ class ConsoleConfig:
     course_name_list = {
         'type': 'xpath',
         'string': '//div[@class="Mconright httpsClass"]/h3/a'
-        #'string': '/html/body/div/div[2]/div[2]/ul/li'
+        # 'string': '/html/body/div/div[2]/div[2]/ul/li'
     }
 
     # 课程页面标题
     course_page_title = '学习进度页面'
-  
+
     # 第一节课程xpath
     first_lesson = {
         'type': 'xpath',
@@ -156,7 +157,7 @@ class AutomaticcompletionConfig:
     not_completed_lesson = {
         'type': 'xpath',
         # 'string': [
-        #     '//div[@class="ncells"]/a//span[@class="roundpointStudent  orange01 a002"]/../..', 
+        #     '//div[@class="ncells"]/a//span[@class="roundpointStudent  orange01 a002"]/../..',
         #     '//div[@class="ncells"]/a//span[@class="roundpoint  orange01"]/../..',
         #     '//div[@class="ncells"]/a//span[@class="roundpointStudent"]/../..',
         #     ]
@@ -276,7 +277,8 @@ class AutomaticcompletionConfig:
     }
 
     # 未查到答案等待时间
-    noanswer_sleep = conf.getint('User', 'noanswer_sleep', fallback=5) if conf.getint('User', 'noanswer_sleep', fallback=5) >= 1 else 5
+    noanswer_sleep = conf.getint('User', 'noanswer_sleep', fallback=5) if conf.getint(
+        'User', 'noanswer_sleep', fallback=5) >= 1 else 5
 
     # 章节测试提交frame
     test_submit_iframe = [
@@ -356,16 +358,18 @@ class AutomaticcompletionConfig:
     }
 
 
-
 class QuestionConfig:
     # http请求地址(查询)
-    questions_request_query = 'http://123.207.19.72/api/query' # conf.get('queryHTTP', 'url_query', fallback=False)
+    # conf.get('queryHTTP', 'url_query', fallback=False)
+    questions_request_query = 'http://123.207.19.72/api/query'
 
     # http请求地址(查询/token)
-    questions_request_query_token = 'http://123.207.19.72/api/token-query' # conf.get('queryHTTP', 'url_query_token', fallback=False)
+    # conf.get('queryHTTP', 'url_query_token', fallback=False)
+    questions_request_query_token = 'http://123.207.19.72/api/token-query'
 
     # http请求地址(更新)
-    questions_request_update = 'http://123.207.19.72/api/update' # conf.get('queryHTTP', 'url_update', fallback=False)
+    # conf.get('queryHTTP', 'url_update', fallback=False)
+    questions_request_update = 'http://123.207.19.72/api/update'
 
     # 微信题库公众号
     wechat_mp = [x for x in conf.get('User', 'wechat_mp').split()]

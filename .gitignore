@@ -10,6 +10,7 @@ __pycache__/
 *.ini
 package.bat
 Fefs.spec
+TODO.md
 
 
 # Distribution / packaging

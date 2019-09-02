@@ -1,14 +1,18 @@
 # coding:utf-8
-from xml.dom import minidom
-import re
-from random import choice
-from wxpy import Bot, ensure_one, SHARING
-import threading
-from .config import QuestionConfig as qc
-import time
-from logzero import logger
-import sys
 import os
+import re
+import sys
+import threading
+import time
+from random import choice
+from xml.dom import minidom
+
+from logzero import logger
+
+from wxpy import SHARING, Bot, ensure_one
+
+from .config import QuestionConfig as qc
+
 r = '[\s+\.\!\/_,$%^*(+\"\']+|[+——！，。？、~@#￥%……&*（）“”]+'
 r2 = '(?<!/)&'
 
@@ -35,7 +39,8 @@ def run_wechat():
     def handle_receive_msg(msg):
         global messages
         try:
-            answer = minidom.parseString(msg.raw['Content'].replace('\x01', '&')).getElementsByTagName('des')[0].firstChild.nodeValue
+            answer = minidom.parseString(msg.raw['Content'].replace(
+                '\x01', '&')).getElementsByTagName('des')[0].firstChild.nodeValue
             print(answer)
             if answer:
                 messages.append(answer)

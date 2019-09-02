@@ -1,16 +1,19 @@
 # coding:utf-8
-from xml.dom import minidom
+import os
 import re
-from random import choice
+import sys
 import threading
 import time
+from random import choice
+from xml.dom import minidom
+
 from logzero import logger
-import sys
-import os
+
 import itchat
+
 try:
     from .config import QuestionConfig as qc
-    wechat_mps = qc.wechat_mp #  ['校查']
+    wechat_mps = qc.wechat_mp  # ['校查']
 except ImportError:
     wechat_mps = ['校查']
 
@@ -40,7 +43,8 @@ def exit_callback():
 
 def init_wechat():
     global target
-    itchat.auto_login(hotReload=True, exitCallback=exit_callback, loginCallback=login_callback)
+    itchat.auto_login(hotReload=True, exitCallback=exit_callback,
+                      loginCallback=login_callback)
     for x in wechat_mps:
         res = itchat.search_mps(x)
         if len(res) == 1:
@@ -53,8 +57,6 @@ def init_wechat():
             print('微信公众号[{0}]存在多个'.format(x))
             os.system('pause')
             sys.exit(0)
-            
-
 
 
 @itchat.msg_register(itchat.content.SHARING, isMpChat=True)
@@ -62,12 +64,12 @@ def handle_receive_msg(msg):
     global messages
     # print(msg)
     try:
-        answer = minidom.parseString(msg['Content'].replace('\x01', '&')).getElementsByTagName('des')[0].firstChild.nodeValue
+        answer = minidom.parseString(msg['Content'].replace(
+            '\x01', '&')).getElementsByTagName('des')[0].firstChild.nodeValue
         if answer:
             messages.append(answer)
     except:
         pass
-
 
 
 def search(title):

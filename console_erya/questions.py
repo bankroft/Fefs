@@ -1,8 +1,10 @@
 # coding:utf-8
 import re
+from hashlib import md5
+
 import demjson
 import requests
-from hashlib import md5
+
 from .config import QuestionConfig as qc
 
 
@@ -34,7 +36,8 @@ def query_http_server(op, defalut=True, **kwargs):
             md = md5()
             md.update((kwargs['title']+kwargs['answer']+string_enc).encode())
             try:
-                tmp = demjson.decode(requests.post(qc.questions_request_update, data={'title': kwargs['title'], 'answer': kwargs['answer'], 'enc': md.hexdigest()}).text, encoding='utf-8')
+                tmp = demjson.decode(requests.post(qc.questions_request_update, data={
+                                     'title': kwargs['title'], 'answer': kwargs['answer'], 'enc': md.hexdigest()}).text, encoding='utf-8')
             except:
                 return False, 404, '未知错误'
             if tmp['code'] == 100:
@@ -43,7 +46,8 @@ def query_http_server(op, defalut=True, **kwargs):
             if defalut:
                 if qc.token:
                     try:
-                        i = requests.get(qc.questions_request_query_token, params={'title': kwargs['title'], 'token': qc.token})
+                        i = requests.get(qc.questions_request_query_token, params={
+                                         'title': kwargs['title'], 'token': qc.token})
                         if i.status_code == 403:
                             return False, 403, 'token频率已达上限'
                         elif i.status_code == 200:
@@ -68,7 +72,8 @@ def query_http_server(op, defalut=True, **kwargs):
                     md.update((kwargs['title'] + string_enc).encode())
                     # sure = False
                     try:
-                        i = requests.get(qc.questions_request_query_token, params={'title': kwargs['title'], 'token': qc.token})
+                        i = requests.get(qc.questions_request_query_token, params={
+                                         'title': kwargs['title'], 'token': qc.token})
                         if i.status_code == 200:
                             i = demjson.decode(i.text, encoding='utf-8')
                             if i['code'] == 100:
@@ -102,7 +107,8 @@ def query_http_server(op, defalut=True, **kwargs):
             md = md5()
             md.update((kwargs['title']+string_enc).encode())
             try:
-                requests.post(qc.questions_request_update, data={'title': kwargs['title'], 'enc': md.hexdigest()})
+                requests.post(qc.questions_request_update, data={
+                              'title': kwargs['title'], 'enc': md.hexdigest()})
             except:
                 pass
         return False
